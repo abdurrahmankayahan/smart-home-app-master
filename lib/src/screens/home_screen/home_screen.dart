@@ -145,7 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   child: TabBar(
                     dividerColor: Colors.amber,
-                    dividerHeight: 3,
+                   g
                     isScrollable: true,
                     unselectedLabelColor: Colors.white.withOpacity(0.3),
                     indicatorColor: const Color(0xFF464646),
