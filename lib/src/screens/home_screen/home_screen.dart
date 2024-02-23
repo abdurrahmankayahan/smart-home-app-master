@@ -35,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   gettingUserData() async {
-    late  String em, un, uid;
+    late String em, un, uid;
     await HelperFunctions.getUserEmailFromSF().then((val) {
       em = val!;
     });
@@ -145,7 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   child: TabBar(
                     dividerColor: Colors.amber,
-                   g
+                    // dividerHeight: 3,
                     isScrollable: true,
                     unselectedLabelColor: Colors.white.withOpacity(0.3),
                     indicatorColor: const Color(0xFF464646),
@@ -189,20 +189,19 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
 
-      useEffect(() {
-     if(userId.isEmpty)
-     {
-      return(){Center(child: CircularProgressIndicator());};
-     }
-
+    useEffect(() {
+      if (userId.isEmpty) {
         return () {
-          print('HomeScreen disposed');
+          Center(child: CircularProgressIndicator());
         };
-      },[]);
+      }
 
+      return () {
+        print('HomeScreen disposed');
+      };
+    }, []);
 
-    return(
-    FutureBuilder(
+    return (FutureBuilder(
       future: db(),
       builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -217,7 +216,5 @@ class _HomeScreenState extends State<HomeScreen> {
         return Center(child: Text('No data'));
       },
     ));
-
-     
-   }
+  }
 }
