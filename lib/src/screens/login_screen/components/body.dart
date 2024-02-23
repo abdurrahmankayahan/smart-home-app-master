@@ -218,7 +218,7 @@ class _BodyState extends State<Body> {
         await HelperFunctions.saveUserEmailSF(email);
         await HelperFunctions.saveUserNameSF(name);
         await HelperFunctions.saveUserIdSF(uuid);
-
+ 
         print(uuid);
         print(name);
         print(email);
