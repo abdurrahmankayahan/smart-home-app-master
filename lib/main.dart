@@ -1,6 +1,9 @@
 import 'package:smart360/firebase_options.dart';
+import 'package:smart360/helper/helper_function.dart';
 import 'package:smart360/provider/getit.dart';
 import 'package:smart360/routes/routes.dart';
+import 'package:smart360/src/models/data_models/userModel.dart';
+import 'package:smart360/src/screens/home_screen/home_screen.dart';
 import 'package:smart360/src/screens/splash_screen/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -14,12 +17,40 @@ void main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool isLogged=false;
+
+   @override
+  void initState() {
+    super.initState();
+    gettingUserData();
+  }
+late UserModel user;
+  gettingUserData() async {
+    HelperFunctions hlp=HelperFunctions();
+    hlp.initSP();
+user=await hlp.getUserModel() as UserModel;
+  
+    setState(() {
+    isLogged=user.getIsLogged!;
+    });
+  }
+  
+
+  
   final ThemeMode themeMode = ThemeMode.system;
+
   @override
   Widget build(BuildContext context) {
+   
+   
     return MaterialApp(
       title: 'smart360',
       debugShowCheckedModeBanner: false,
@@ -84,7 +115,8 @@ class MyApp extends StatelessWidget {
         ),
       ),
       routes: routes,
-      home: const SplashScreen(),
+      home: isLogged==true?HomeScreen():SplashScreen(),
     );
+  
   }
 }
