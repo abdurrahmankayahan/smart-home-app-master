@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smart360/helper/helper_function.dart';
 import 'package:smart360/service/database_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:smart360/src/models/data_models/userModel.dart';
 
 class AuthService {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
@@ -41,9 +42,16 @@ class AuthService {
   //signout
   Future signOut() async {
     try {
-      await HelperFunctions.saveUserLoggedInStatus(false);
-      await HelperFunctions.saveUserEmailSF("");
-      await HelperFunctions.saveUserNameSF("");
+      HelperFunctions hlp=HelperFunctions();
+      hlp.initSP();
+      hlp.setUserInfo(UserModel());
+
+
+      // await HelperFunctions.saveUserLoggedInStatus(false);
+      // await HelperFunctions.saveUserEmailSF("");
+      // await HelperFunctions.saveUserNameSF("");
+
+
       await firebaseAuth.signOut();
     } catch (e) {
       return null;

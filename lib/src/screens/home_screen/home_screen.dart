@@ -6,7 +6,10 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:smart360/config/size_config.dart';
 import 'package:smart360/helper/helper_function.dart';
 import 'package:smart360/provider/base_view.dart';
+
 import 'package:smart360/src/screens/add_environment/add_environment.dart';
+
+import 'package:smart360/src/models/data_models/userModel.dart';
 
 import 'package:smart360/src/screens/edit_profile/edit_profile.dart';
 import 'package:smart360/src/screens/manage_environment/manage_environment_screen.dart';
@@ -36,23 +39,18 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     gettingUserData();
   }
-
+late UserModel user;
   gettingUserData() async {
-    late String em, un, uid;
-    await HelperFunctions.getUserEmailFromSF().then((val) {
-      em = val!;
-    });
-    await HelperFunctions.getUserNameFromSF().then((val) {
-      un = val!;
-    });
-    await HelperFunctions.getUserIdSF().then((val) {
-      uid = val!;
-    });
 
+    HelperFunctions hlp=HelperFunctions();
+    hlp.initSP();
+user=await hlp.getUserModel() as UserModel;
+  
     setState(() {
-      email = em;
-      username = un;
-      userId = uid;
+      email = user.userEmail!;
+      username = user.userName!;
+      userId = user.userId!;
+
     });
   }
 
