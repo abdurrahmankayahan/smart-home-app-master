@@ -1,5 +1,7 @@
+import 'package:smart360/src/screens/add_environment/add_environment.dart';
 import 'package:smart360/src/screens/edit_profile/edit_profile.dart';
 import 'package:smart360/src/screens/login_screen/login_screen.dart';
+import 'package:smart360/src/screens/manage_environment/manage_environment_screen.dart';
 import 'package:smart360/src/screens/settings_screen/settings_screen.dart';
 import 'package:smart360/src/screens/signUp_screen/signUp_screen.dart';
 import 'package:smart360/src/screens/smart_ac/smart_ac.dart';
@@ -15,7 +17,7 @@ import 'package:smart360/src/screens/savings_screen/savings_screen.dart';
 
 final Map<String, WidgetBuilder> routes = {
   EditProfile.routeName: (context) => const EditProfile(),
-  HomeScreen.routeName: (context) => const HomeScreen(),
+  HomeScreen.routeName: (context) => HomeScreen(),
   LoginScreen.routeName: (context) => const LoginScreen(),
   SavingsScreen.routeName: (context) => const SavingsScreen(),
   SettingScreen.routeName: (context) => const SettingScreen(),
@@ -24,5 +26,7 @@ final Map<String, WidgetBuilder> routes = {
   SmartLight.routeName: (context) => const SmartLight(),
   SplashScreen.routeName: (context) => const SplashScreen(),
   StatsScreen.routeName: (context) => const StatsScreen(),
-  SignUpScreen.routeName: (context) => const SignUpScreen()
+  SignUpScreen.routeName: (context) => const SignUpScreen(),
+  addEnvironmentScreen.routeName: (context) => const addEnvironmentScreen(),
+  ManageEnvScreen.routeName: (context) => const ManageEnvScreen(),
 };
