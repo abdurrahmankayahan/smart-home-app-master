@@ -17,12 +17,12 @@ class Body extends StatelessWidget {
   final HomeScreenViewModel model;
   final String uid;
   final String sn;
-  const Body({Key? key, required this.model, required this.sn, required this.uid})
+  const Body(
+      {Key? key, required this.model, required this.sn, required this.uid})
       : super(key: key);
 
   Future<Widget> db(BuildContext context) async {
-    DataSnapshot s =
-        await databaseReference.child("8GxrPeNnD6gUbquWUw37KgBtrho1").get();
+    DataSnapshot s = await databaseReference.child(uid).get();
     return SingleChildScrollView(
       child: Container(
         padding: EdgeInsets.symmetric(
@@ -43,13 +43,18 @@ class Body extends StatelessWidget {
               padding: EdgeInsets.all(getProportionateScreenHeight(5)),
               child: SavingsContainer(model: model),
             ),
-            Column(
-              children:
-                  s.child("devices").child(sn).child("components").children.map(
-                (child) {
-                   
-                   return(Row(children: [Expanded(
-                    child: Padding(
+            Container(
+              height: 200,
+              child: GridView.count(
+                crossAxisCount: 2,
+                children: s
+                    .child("devices")
+                    .child(sn)
+                    .child("components")
+                    .children
+                    .map(
+                  (child) {
+                    return (Padding(
                       padding: EdgeInsets.all(getProportionateScreenHeight(5)),
                       child: DarkContainer(
                         itsOn: (child.child("value").value.toString() == "0"
@@ -67,7 +72,7 @@ class Body extends StatelessWidget {
                         onTap: () {
                           // Handle fan switch
 
-// TODO: set setting page  for  your  property
+                          // TODO: set setting page  for  your  property
                         },
                         iconAsset: 'assets/icons/svg/fan.svg',
                         device: child.key.toString(),
@@ -75,62 +80,47 @@ class Body extends StatelessWidget {
                         switchFav: model.fanFav,
                         isFav: model.isFanFav,
                       ),
-                    ),
-                  )]));
-               
-               
-               
-               
-                },
-              ).toList(),
+                    ));
+                  },
+                ).toList(),
+              ),
             ),
-        
-
-Row(
-  
-  children: [Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.all(getProportionateScreenHeight(5)),
-                      child: DarkContainer(
-                        itsOn: null,
-                        switchButton: () {
-                         
+            Row(children: [
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.all(getProportionateScreenHeight(5)),
+                  child: DarkContainer(
+                    itsOn: null,
+                    switchButton: () {},
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return PropertyPopup(
+                            itsOn: false,
+                            userId: uid,
+                            deviceSn: sn,
+                            propertyValue: 'Initial Value',
+                            onSave: (newValue) {
+                              // Handle property save
+                            },
+                          );
                         },
-                        onTap: () {
+                      );
 
-                          showDialog(
-    context: context,
-    builder: (context) {
-      return PropertyPopup(
-        itsOn: false,
-        userId: uid,
-        deviceSn: sn,
-        propertyValue: 'Initial Value',
-        onSave: (newValue) {
-          // Handle property save
-        },
-      );
-    },
-  );
-
-// TODO: set setting page  for  your  property
-                        },
-                        iconAsset: 'assets/icons/svg/info.svg',
-                        device: "Yeni Özellik Ekle",
-                        deviceCount: 'Özellik eklemek için dokun',
-                        switchFav: (){},
-                        isFav: model.isFanFav,
-                      ),
-                    ),
-                  )]),
-
-        
-
-        
+                      // TODO: set setting page  for  your  property
+                    },
+                    iconAsset: 'assets/icons/svg/info.svg',
+                    device: "Yeni Özellik Ekle",
+                    deviceCount: 'Özellik eklemek için dokun',
+                    switchFav: () {},
+                    isFav: model.isFanFav,
+                  ),
+                ),
+              )
+            ]),
           ],
         ),
-
-
       ),
     );
   }
