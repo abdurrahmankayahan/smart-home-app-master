@@ -2,18 +2,23 @@ import 'dart:async';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:provider/provider.dart';
+
 import 'package:smart360/config/size_config.dart';
 import 'package:smart360/helper/helper_function.dart';
 import 'package:smart360/provider/base_view.dart';
+
+import 'package:smart360/src/screens/add_environment/add_environment.dart';
+
 import 'package:smart360/src/models/data_models/userModel.dart';
+
 import 'package:smart360/src/screens/edit_profile/edit_profile.dart';
+import 'package:smart360/src/screens/manage_environment/manage_environment_screen.dart';
 import 'package:smart360/src/widgets/custom_bottom_nav_bar.dart';
 import 'package:smart360/view/home_screen_view_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
+
 import 'components/body.dart';
 import 'package:smart360/src/screens/menu_page/menu_screen.dart';
 
@@ -36,6 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 late UserModel user;
   gettingUserData() async {
+
     HelperFunctions hlp=HelperFunctions();
     hlp.initSP();
 user=await hlp.getUserModel() as UserModel;
@@ -44,6 +50,7 @@ user=await hlp.getUserModel() as UserModel;
       email = user.userEmail!;
       username = user.userName!;
       userId = user.userId!;
+
     });
   }
 
@@ -58,8 +65,10 @@ user=await hlp.getUserModel() as UserModel;
       // Child yoksa, userId numarasını kaydedin
       await databaseReference.child('$userId').child("devices").set({
         '34434232': {
-          'components': ["isik"],
-          'config': {'place': "conf", 'title': "Bir Cihaz Ekle"}
+          'components': {
+            'isik': {'pinIOStatus': 1, 'pinNumber': 2, 'value': 0}
+          },
+          'config': {'place': "conf", 'title': "Akıllı Sistemler"}
         }
       });
       snapshot = await databaseReference.child('$userId').get();
@@ -90,9 +99,7 @@ user=await hlp.getUserModel() as UserModel;
                 iconTheme: const IconThemeData(color: Colors.black),
                 title: Padding(
                   padding: EdgeInsets.symmetric(
-                    horizontal: getProportionateScreenWidth(
-                      4,
-                    ),
+                    horizontal: getProportionateScreenWidth(4),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -137,26 +144,48 @@ user=await hlp.getUserModel() as UserModel;
                       35,
                     ),
                   ),
-                  child: TabBar(
-                    dividerColor: Colors.amber,
-                    dividerHeight: 3,
-                    isScrollable: true,
-                    unselectedLabelColor: Colors.white.withOpacity(0.3),
-                    indicatorColor: const Color(0xFF464646),
-                    tabs: s.child("devices").children.map(
-                      (child) {
-                        return (Tab(
-                          child: Text(
-                            child
-                                .child("config")
-                                .child("title")
-                                .value
-                                .toString(),
-                            style: Theme.of(context).textTheme.displaySmall,
-                          ),
-                        ));
-                      },
-                    ).toList(),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TabBar(
+                          dividerColor: Colors.amber,
+                          //dividerHeight: 3,
+                          isScrollable: true,
+                          unselectedLabelColor: Colors.white.withOpacity(0.3),
+                          indicatorColor: const Color(0xFF464646),
+                          tabs: s.child("devices").children.map(
+                            (child) {
+                              return (Tab(
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      child
+                                          .child("config")
+                                          .child("title")
+                                          .value
+                                          .toString(),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .displaySmall,
+                                    ),
+                                  ],
+                                ),
+                              ));
+                            },
+                          ).toList(),
+                        ),
+                      ),
+                      IconButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const addEnvironmentScreen(),
+                                ));
+                          },
+                          icon: Icon(Icons.add_home_work_rounded))
+                    ],
                   ),
                 ),
               ),
@@ -183,20 +212,19 @@ user=await hlp.getUserModel() as UserModel;
   Widget build(BuildContext context) {
     SizeConfig().init(context);
 
-      useEffect(() {
-     if(userId.isEmpty)
-     {
-      return(){Center(child: CircularProgressIndicator());};
-     }
-
+    useEffect(() {
+      if (userId.isEmpty) {
         return () {
-          print('HomeScreen disposed');
+          Center(child: CircularProgressIndicator());
         };
-      },[]);
+      }
 
+      return () {
+        print('HomeScreen disposed');
+      };
+    }, []);
 
-    return(
-    FutureBuilder(
+    return (FutureBuilder(
       future: db(),
       builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -211,7 +239,5 @@ user=await hlp.getUserModel() as UserModel;
         return Center(child: Text('No data'));
       },
     ));
-
-     
-   }
+  }
 }
