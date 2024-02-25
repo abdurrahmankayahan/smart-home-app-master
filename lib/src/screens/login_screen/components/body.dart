@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart360/config/size_config.dart';
 import 'package:smart360/helper/helper_function.dart';
+import 'package:smart360/src/models/data_models/userModel.dart';
 import 'package:smart360/src/screens/home_screen/home_screen.dart';
 import 'package:smart360/widgets/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -214,10 +215,17 @@ class _BodyState extends State<Body> {
         String name = data['name'];
         String uuid=data["uid"];
 
-        await HelperFunctions.saveUserLoggedInStatus(true);
-        await HelperFunctions.saveUserEmailSF(email);
-        await HelperFunctions.saveUserNameSF(name);
-        await HelperFunctions.saveUserIdSF(uuid);
+UserModel user=UserModel(userName: name,userEmail: email,userId: uuid,isLogged: true);
+
+HelperFunctions hlp=HelperFunctions();
+
+hlp.setUserInfo(user);
+
+
+        // await HelperFunctions.saveUserLoggedInStatus(true);
+        // await HelperFunctions.saveUserEmailSF(email);
+        // await HelperFunctions.saveUserNameSF(name);
+        // await HelperFunctions.saveUserIdSF(uuid);
  
         print(uuid);
         print(name);

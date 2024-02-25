@@ -6,6 +6,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smart360/helper/helper_function.dart';
 import 'package:smart360/service/auth_service.dart';
+import 'package:smart360/src/models/data_models/userModel.dart';
+import 'package:smart360/src/screens/home_screen/home_screen.dart';
 import 'package:smart360/src/screens/login_screen/login_screen.dart';
 import 'package:smart360/widgets/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -218,10 +220,22 @@ class _BodyState extends State<Body> {
         (value) async {
           if (value == true) {
             // saving the shared preference state
-            await HelperFunctions.saveUserLoggedInStatus(true);
-            await HelperFunctions.saveUserEmailSF(email);
-            await HelperFunctions.saveUserNameSF(name);
-            Navigator.of(context).pushNamed(LoginScreen.routeName);
+
+            HelperFunctions hlp= HelperFunctions();
+          hlp.initSP();
+
+
+          hlp.setUserInfo(UserModel(userName: name,userEmail: email,isLogged: true));
+       
+       
+            // await HelperFunctions.saveUserLoggedInStatus(true);
+            // await HelperFunctions.saveUserEmailSF(email);
+            // await HelperFunctions.saveUserNameSF(name);
+
+
+
+
+            Navigator.of(context).pushNamed(HomeScreen.routeName);
             formkey.currentState!.reset();
           } else {
             showSnackbar(context, Colors.red, value);
