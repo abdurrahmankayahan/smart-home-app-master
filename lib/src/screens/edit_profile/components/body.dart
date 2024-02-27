@@ -1,7 +1,14 @@
 import 'package:smart360/config/size_config.dart';
+import 'package:smart360/helper/helper_function.dart';
+import 'package:smart360/src/database/querry.dart';
+import 'package:smart360/src/models/data_models/userModel.dart';
 import 'package:smart360/src/screens/edit_profile/components/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:dotted_border/dotted_border.dart';
+
+
+QuerryClass querry=QuerryClass();
+HelperFunctions hlp=HelperFunctions();
 
 class Body extends StatefulWidget {
   const Body({Key? key}) : super(key: key);
@@ -11,11 +18,27 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
+  late UserModel user;
   TextEditingController nameController = TextEditingController();
   TextEditingController usernameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
+@override
+  void initState() {
+getUserinfo();
+    super.initState();
+  }
+
+getUserinfo()async{
+    hlp.initSP();
+ UserModel tmp=await hlp.getUserModel() as UserModel;
+
+ setState(() {
+   user=tmp;
+ });
+}
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +62,7 @@ class _BodyState extends State<Body> {
                 const Text(
                   'Profilini düzenle',
                   // style: Theme.of(context).textTheme.headline1,
-                  style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                 ),
                 const Spacer(),
                 InkWell(
@@ -118,7 +141,7 @@ class _BodyState extends State<Body> {
                   },
                   cursorColor: Colors.black12,
                   decoration: InputDecoration(
-                    hintText: 'İsim',
+                    hintText: user.getUserName?? 'İsim',
                     hintStyle: const TextStyle(color: Colors.grey),
                     icon: Container(
                       height: 50,
@@ -210,7 +233,7 @@ class _BodyState extends State<Body> {
                   },
                   cursorColor: Colors.black12,
                   decoration: InputDecoration(
-                    hintText: 'Email',
+                    hintText: user.getUserEmail??'Email',
                     hintStyle: const TextStyle(color: Colors.grey),
                     icon: Container(
                       height: 50,

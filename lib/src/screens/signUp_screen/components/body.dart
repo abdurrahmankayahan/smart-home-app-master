@@ -3,14 +3,15 @@
 // import 'package:enelsis_app/sabitler/theme.dart';
 // import 'package:enelsis_app/service/auth_service.dart';
 // import 'package:enelsis_app/widgets/widgets.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:smart360/helper/helper_function.dart';
 import 'package:smart360/service/auth_service.dart';
+import 'package:smart360/src/database/querry.dart';
 import 'package:smart360/src/models/data_models/userModel.dart';
 import 'package:smart360/src/screens/home_screen/home_screen.dart';
-import 'package:smart360/src/screens/login_screen/login_screen.dart';
+
 import 'package:smart360/widgets/widgets.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -31,7 +32,7 @@ class _BodyState extends State<Body> {
 
   late String user, email, password, name, department = "";
   final formkey = GlobalKey<FormState>();
-  final firebaseAuth = FirebaseAuth.instance;
+  QuerryClass querry=QuerryClass();
   AuthService authService = AuthService();
 
   @override
@@ -122,9 +123,7 @@ class _BodyState extends State<Body> {
                                   sifre_gozukme = !sifre_gozukme;
                                 });
                               },
-                              icon: Icon(sifre_gozukme
-                                  ? Icons.close
-                                  : Icons.remove_red_eye),
+                              icon: Icon(!sifre_gozukme? Icons.remove_red_eye_outlined:Icons.remove_red_eye),
                               color: renk(metin_renk)),
                         ],
                       ),
@@ -250,16 +249,7 @@ class _BodyState extends State<Body> {
 }
 
 // Kullanıcının Firestore'a verilerini kaydetme
-void saveUserDataToFirestore(
-    String userId, String email, String password, String name) async {
-  CollectionReference usersCollection =
-      FirebaseFirestore.instance.collection('users');
-  await usersCollection.doc(userId).set({
-    'email': email,
-    'password': password,
-    'name': name,
-  });
+void saveUserDataToFirestore(UserModel userModel) async {
+QuerryClass().newUser(userModel);
 
-
-  
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:smart360/helper/helper_function.dart';
+import 'package:smart360/src/models/data_models/userModel.dart';
 
 class ManageEnvScreen extends StatefulWidget {
   static String routeName = '/ManageEnvScreen';
@@ -24,17 +25,13 @@ class _ManageEnvScreenState extends State<ManageEnvScreen> {
   }
 
   gettingUserData() async {
-    late String un, uid;
-    await HelperFunctions.getUserNameFromSF().then((val) {
-      un = val!;
-    });
-    await HelperFunctions.getUserIdSF().then((val) {
-      uid = val!;
-    });
+HelperFunctions hlp=HelperFunctions();
+hlp.initSP;
+UserModel user=hlp.getUserModel() as UserModel;
 
     setState(() {
-      username = un;
-      userId = uid;
+      username = user.userName!;
+      userId = user.userId!;
     });
   }
 

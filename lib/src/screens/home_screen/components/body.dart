@@ -1,18 +1,18 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:smart360/config/size_config.dart';
+import 'package:smart360/src/database/querry.dart';
+import 'package:smart360/src/models/data_models/propertyModel.dart';
 import 'package:smart360/src/screens/home_screen/components/property_popup.dart';
 import 'package:smart360/src/screens/home_screen/components/savings_container.dart';
 import 'package:smart360/src/screens/home_screen/components/weather_container.dart';
-import 'package:smart360/src/screens/smart_ac/smart_ac.dart';
-import 'package:smart360/src/screens/smart_fan/smart_fan.dart';
-import 'package:smart360/src/screens/smart_light/smart_light.dart';
+
 import 'package:smart360/view/home_screen_view_model.dart';
 import 'package:flutter/material.dart';
-import 'add_device_widget.dart';
+
 import 'dark_container.dart';
 
-final databaseReference = FirebaseDatabase.instance.ref();
 
+QuerryClass querry=QuerryClass();
 class Body extends StatelessWidget {
   final HomeScreenViewModel model;
   final String uid;
@@ -22,7 +22,7 @@ class Body extends StatelessWidget {
       : super(key: key);
 
   Future<Widget> db(BuildContext context) async {
-    DataSnapshot s = await databaseReference.child(uid).get();
+
     return SingleChildScrollView(
       child: Container(
         padding: EdgeInsets.symmetric(
@@ -34,57 +34,105 @@ class Body extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Text(sn),
-            Padding(
-              padding: EdgeInsets.all(getProportionateScreenHeight(5)),
-              child: WeatherContainer(model: model),
-            ),
+            // Padding(
+            //   padding: EdgeInsets.all(getProportionateScreenHeight(5)),
+            //   child: WeatherContainer(model: model),
+            // ),
             Padding(
               padding: EdgeInsets.all(getProportionateScreenHeight(5)),
               child: SavingsContainer(model: model),
             ),
+            
             Container(
               height: 200,
-              child: GridView.count(
-                crossAxisCount: 2,
-                children: s
-                    .child("devices")
-                    .child(sn)
-                    .child("components")
-                    .children
-                    .map(
-                  (child) {
-                    return (Padding(
-                      padding: EdgeInsets.all(getProportionateScreenHeight(5)),
-                      child: DarkContainer(
-                        itsOn: (child.child("value").value.toString() == "0"
-                            ? false
-                            : true),
-                        switchButton: () {
-                          child.ref.update({
-                            'value':
-                                child.child("value").value.toString() == "0"
-                                    ? 1
-                                    : 0
-                          });
-                          model.onRefresh();
-                        },
-                        onTap: () {
-                          // Handle fan switch
+               child: FutureBuilder(
+    future: querry.getDeviceComp(uid, sn),
+    builder: (BuildContext context, AsyncSnapshot<DataSnapshot> snapshot) {
+      if (snapshot.hasData) {
+        return GridView.count(
+          crossAxisCount: 2,
+          children: snapshot.data!.children.map((e) 
+          {return Padding(
+            padding: EdgeInsets.all(getProportionateScreenHeight(5)),
+            child: DarkContainer(
+              itsOn: (e.child("value").value.toString() == "0"
+                  ? false
+                  : true),
+              switchButton: () {
+                e.ref.update({
+                  'value':
+                      e.child("value").value.toString() == "0"
+                          ? 1
+                          : 0
+                });
+                model.onRefresh();
+              },
+              onTap: () {
+                // Handle fan switch
 
-                          // TODO: set setting page  for  your  property
-                        },
-                        iconAsset: 'assets/icons/svg/fan.svg',
-                        device: child.key.toString(),
-                        deviceCount: '2 cihaz',
-                        switchFav: model.fanFav,
-                        isFav: model.isFanFav,
-                      ),
-                    ));
-                  },
-                ).toList(),
-              ),
+                // TODO: set setting page  for  your  property
+              },
+              iconAsset: 'assets/icons/svg/fan.svg',
+              device: e.key.toString(),
+              deviceCount: '2 cihaz',
+              switchFav: model.fanFav,
+              isFav: model.isFanFav,
             ),
+      );}).toList(),
+        );
+      } else {
+        return CircularProgressIndicator();
+      }
+    },
+  ),
+                        
+              
+            ),
+           
+           Divider(),
+  Container(
+              height: 200,
+               child: FutureBuilder(
+    future: querry.getDeviceCompList(uid, sn),
+    builder: (BuildContext context, AsyncSnapshot<List<PropertyModel>> snapshot) {
+      if (snapshot.hasData) {
+        return GridView.count(
+          crossAxisCount: 2,
+          children: snapshot.data!.map((e) 
+          {return Padding(
+            padding: EdgeInsets.all(getProportionateScreenHeight(5)),
+            child: DarkContainer(
+              itsOn: (e.pinVal == "0"
+                  ? false
+                  : true),
+              switchButton: () {
+                e.getUpdateFunc();
+                model.onRefresh();
+              },
+              onTap: () {
+                // Handle fan switch
+
+                // TODO: set setting page  for  your  property
+              },
+              iconAsset: 'assets/icons/svg/fan.svg',
+              device: e.propertyName!,
+              deviceCount: '2 cihaz',
+              switchFav: model.fanFav,
+              isFav: model.isFanFav,
+            ),
+      );}).toList(),
+        );
+      } else {
+        return CircularProgressIndicator();
+      }
+    },
+  ),
+                        
+              
+            ),
+           
+           
+
             Row(children: [
               Expanded(
                 child: Padding(

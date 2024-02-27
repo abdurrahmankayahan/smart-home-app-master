@@ -1,11 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
+
 import 'package:smart360/config/size_config.dart';
-import 'package:smart360/helper/helper_function.dart';
-import 'package:smart360/src/models/data_models/userModel.dart';
-import 'package:smart360/src/screens/home_screen/home_screen.dart';
-import 'package:smart360/widgets/widgets.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:smart360/src/database/querry.dart';
+import 'package:smart360/src/screens/splash_screen/splash_screen.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:smart360/src/models/ext.dart';
@@ -20,14 +17,15 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
+  QuerryClass querry=QuerryClass();
   Tema tema = Tema();
   bool sifre_gozukme = false;
-  bool _isLoading = false;
+
   final formkey = GlobalKey<FormState>();
 
   late String user, email, password, department = "";
   late String username;
-  final firebaseAuth = FirebaseAuth.instance;
+
 
   @override
   void initState() {
@@ -101,6 +99,7 @@ class _BodyState extends State<Body> {
                     children: [
                       Expanded(
                         child: TextFormField(
+                          obscureText: sifre_gozukme,
                           validator: (value) {
                             if (value!.isEmpty) {
                               return "bilgileri eksiksiz doldurunuz";
@@ -126,8 +125,9 @@ class _BodyState extends State<Body> {
                             sifre_gozukme = !sifre_gozukme;
                           });
                         },
-                        icon: Icon(Icons.remove_red_eye),
+                        icon: Icon(!sifre_gozukme? Icons.remove_red_eye_outlined:Icons.remove_red_eye),
                         color: renk(metin_renk),
+                        
                       ),
                     ],
                   ),
@@ -150,7 +150,7 @@ class _BodyState extends State<Body> {
                         onTap: () async {
                           if (formkey.currentState!.validate()) {
                             formkey.currentState!.save();
-                            signIn();
+                            querry.signIn(context,email,password);
                           }
                         },
                         child: Center(
@@ -181,7 +181,7 @@ class _BodyState extends State<Body> {
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                Navigator.pushNamed(context, "/");
+                                Navigator.pushNamed(context,SplashScreen.routeName);
                               },
                           ),
                         ],
@@ -198,57 +198,5 @@ class _BodyState extends State<Body> {
     );
   }
 
-  signIn() async {
-    QuerySnapshot snap = await FirebaseFirestore.instance
-        .collection("users")
-        .where("email", isEqualTo: email)
-        .get();
 
-    if (snap.docs.length > 0) {
-      DocumentSnapshot doc = snap.docs[0];
-      Map<String, dynamic>? data = doc.data() as Map<String, dynamic>?;
-
-      if (data != null &&
-          data.containsKey('email') &&
-          data.containsKey('name')) {
-        String email = data['email'];
-        String name = data['name'];
-        String uuid=data["uid"];
-
-UserModel user=UserModel(userName: name,userEmail: email,userId: uuid,isLogged: true);
-
-HelperFunctions hlp=HelperFunctions();
-
-hlp.setUserInfo(user);
-
-
-        // await HelperFunctions.saveUserLoggedInStatus(true);
-        // await HelperFunctions.saveUserEmailSF(email);
-        // await HelperFunctions.saveUserNameSF(name);
-        // await HelperFunctions.saveUserIdSF(uuid);
- 
-        print(uuid);
-        print(name);
-        print(email);
-
-        try {
-          final userResult = await firebaseAuth.signInWithEmailAndPassword(
-            email: email,
-            password: password,
-          );
-          print(userResult.user!.uid);
-          print(name);
-          print(email);
-          Navigator.of(context).pushNamed(HomeScreen.routeName);
-        } catch (e) {
-          showSnackbar(context, Colors.red, e.toString());
-          print(e.toString());
-        }
-      } else {
-        showSnackbar(context, Colors.red, 'Kullanıcı bilgileri eksik');
-      }
-    } else {
-      showSnackbar(context, Colors.red, 'Kullanıcı bulunamadı');
-    }
-  }
 }
