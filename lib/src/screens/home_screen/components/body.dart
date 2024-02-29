@@ -107,7 +107,8 @@ class Body extends StatelessWidget {
                   : true),
               switchButton: () {
                 e.getUpdateFunc();
-                model.onRefresh();
+               // model.onRefresh();
+                
               },
               onTap: () {
                 // Handle fan switch

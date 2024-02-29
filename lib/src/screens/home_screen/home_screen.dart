@@ -13,6 +13,7 @@ import 'package:smart360/src/screens/add_environment/add_environment.dart';
 import 'package:smart360/src/models/data_models/userModel.dart';
 
 import 'package:smart360/src/screens/edit_profile/edit_profile.dart';
+import 'package:smart360/src/screens/manage_environment/manage_environment_screen.dart';
 
 import 'package:smart360/src/widgets/custom_bottom_nav_bar.dart';
 import 'package:smart360/view/home_screen_view_model.dart';
@@ -162,7 +163,8 @@ user=await hlp.getUserModel() as UserModel;
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                       addEnvironmentScreen(userId:userId),
+                                       //addEnvironmentScreen(userId:userId),
+                                       ManageEnvScreen(),
                                 ));
                           },
                           icon: Icon(Icons.add_home_work_rounded))

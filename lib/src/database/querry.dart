@@ -8,6 +8,7 @@ import 'package:smart360/helper/helper_function.dart';
 import 'package:smart360/src/models/data_models/propertyModel.dart';
 import 'package:smart360/src/models/data_models/userModel.dart';
 import 'package:smart360/src/screens/home_screen/home_screen.dart';
+import 'package:smart360/view/home_screen_view_model.dart';
 import 'package:smart360/widgets/widgets.dart';
 
 class QuerryClass {
@@ -98,12 +99,13 @@ class QuerryClass {
               propertyName: tmp.key.toString(),
               pinNo: tmp.child("pinNumber").value.toString(),
               pinIO: tmp.child("pinIOStatus").value.toString(),
-              itsOn: tmp.child("value").value.toString(),
+              pinVal: tmp.child("value").value.toString(),
               updateFunc: (({val}) => {
                     tmp.ref.update({
                       'value': val ??
                           (tmp.child("value").value.toString() == "0" ? 1 : 0)
                     })
+                    
                   }),
             ))
         .toList();

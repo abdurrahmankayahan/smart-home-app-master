@@ -3,6 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class DarkContainer extends StatelessWidget {
+
+
+///TODO: Dark Container yerine  bir  container uygulaması yaz  parametresi  propertyModel olsun.
+///
+///Pin bilgisine göre  sadece veri okur  (sensör) veya  1-0  çıktı verir. (role)  
+///(Pin bilgisine göre  containerda button   veya sadece text alanı tutulmalı)
+///özellik ismi olmalı
+///özelliği ifade eden resim için resim url bilgisi tutmalı
+/// value  bilgisi için  verileri almalı 
+/// button olan container için on click fonk.  olmalı
+///  uzerine tıklandığında  özellikleri ayarlamak değişiklik yapmak için  sayfaları  açan fonk. olmalı (void callback  & Function)
+/// bu bilgileri içeren properyModel  yazılmalı 
+/// 
+/// !! Veritabanı bu bilgilere göre tekrar oluşturulmalıdır.
+
+  
   final String iconAsset;
   final VoidCallback onTap;
   final String device;
@@ -73,10 +89,6 @@ class DarkContainer extends StatelessWidget {
                       // color: Color(0xFF808080),
                     ),
                   ):Row()
-
-
-
-
 
                 ],
               ),
