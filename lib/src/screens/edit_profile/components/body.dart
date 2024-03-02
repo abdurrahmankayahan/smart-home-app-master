@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smart360/config/size_config.dart';
 import 'package:smart360/helper/helper_function.dart';
 import 'package:smart360/src/database/querry.dart';
@@ -6,9 +7,8 @@ import 'package:smart360/src/screens/edit_profile/components/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:dotted_border/dotted_border.dart';
 
-
-QuerryClass querry=QuerryClass();
-HelperFunctions hlp=HelperFunctions();
+QuerryClass querry = QuerryClass();
+HelperFunctions hlp = HelperFunctions();
 
 class Body extends StatefulWidget {
   const Body({Key? key}) : super(key: key);
@@ -20,25 +20,33 @@ class Body extends StatefulWidget {
 class _BodyState extends State<Body> {
   late UserModel user;
   TextEditingController nameController = TextEditingController();
-  TextEditingController usernameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-@override
+  @override
   void initState() {
-getUserinfo();
+    getUserinfo();
     super.initState();
   }
 
-getUserinfo()async{
+  getUserinfo() async {
     hlp.initSP();
- UserModel tmp=await hlp.getUserModel() as UserModel;
+    UserModel tmp = await hlp.getUserModel() as UserModel;
 
- setState(() {
-   user=tmp;
- });
-}
+    setState(() {
+      user = tmp;
+    });
+  }
+
+  Future<void> ManageProfile() async {
+    CollectionReference usersCollection =
+        FirebaseFirestore.instance.collection('users');
+    print(nameController.text);
+    await usersCollection.doc(user.userId).update({
+      'email': emailController.text,
+      'name': nameController.text,
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -141,7 +149,7 @@ getUserinfo()async{
                   },
                   cursorColor: Colors.black12,
                   decoration: InputDecoration(
-                    hintText: user.getUserName?? 'İsim',
+                    hintText: user.getUserName ?? 'İsim',
                     hintStyle: const TextStyle(color: Colors.grey),
                     icon: Container(
                       height: 50,
@@ -175,48 +183,6 @@ getUserinfo()async{
                 SizedBox(
                   height: getProportionateScreenHeight(20),
                 ),
-                TextFormField(
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  controller: usernameController,
-                  autofocus: false,
-                  keyboardType: TextInputType.text,
-                  validator: (value) {
-                    if (value!.isEmpty || value.trim().isEmpty) {
-                      return 'Username is required';
-                    }
-                    return null;
-                  },
-                  cursorColor: Colors.black12,
-                  decoration: InputDecoration(
-                    hintText: 'Soyisim',
-                    hintStyle: const TextStyle(color: Colors.grey),
-                    icon: Container(
-                      height: 50,
-                      width: 40,
-                      decoration: BoxDecoration(
-                        color: Colors.black,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: const Icon(
-                        Icons.person,
-                        color: Colors.white,
-                      ),
-                    ),
-                    border: const UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black38),
-                    ),
-                    enabled: true,
-                    enabledBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black38),
-                    ),
-                    focusedBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black),
-                    ),
-                    errorBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.redAccent),
-                    ),
-                  ),
-                ),
                 SizedBox(
                   height: getProportionateScreenHeight(20),
                 ),
@@ -233,7 +199,7 @@ getUserinfo()async{
                   },
                   cursorColor: Colors.black12,
                   decoration: InputDecoration(
-                    hintText: user.getUserEmail??'Email',
+                    hintText: user.getUserEmail ?? 'Email',
                     hintStyle: const TextStyle(color: Colors.grey),
                     icon: Container(
                       height: 50,
@@ -265,68 +231,42 @@ getUserinfo()async{
                 SizedBox(
                   height: getProportionateScreenHeight(20),
                 ),
-                TextFormField(
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  controller: phoneController,
-                  autofocus: false,
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
-                    if (value!.isEmpty || value.trim().isEmpty) {
-                      return 'Telefon numarası bilgisi doldurulmalı';
-                    }
-                    return null;
-                  },
-                  cursorColor: Colors.black12,
-                  decoration: InputDecoration(
-                    hintText: 'Telefon Numarsı',
-                    hintStyle: const TextStyle(color: Colors.grey),
-                    icon: Container(
-                      height: 50,
-                      width: 40,
-                      decoration: BoxDecoration(
-                        color: Colors.black,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: const Icon(
-                        Icons.person,
-                        color: Colors.white,
-                      ),
-                    ),
-                    border: const UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black38),
-                    ),
-                    enabled: true,
-                    enabledBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black38),
-                    ),
-                    focusedBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black),
-                    ),
-                    errorBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.redAccent),
-                    ),
-                  ),
-                ),
               ],
             ),
           ),
           SizedBox(
             height: getProportionateScreenHeight(20),
           ),
-          Container(
-            height: getProportionateScreenHeight(40),
-            decoration: BoxDecoration(
-              color: Colors.black87,
-              borderRadius: BorderRadius.circular(20),
+          InkWell(
+            onTap: () async {
+              if (_formKey.currentState!.validate()) {
+                await ManageProfile();
+
+                HelperFunctions hlp = HelperFunctions();
+                hlp.initSP();
+
+                hlp.setUserInfo(UserModel(
+                    userName: nameController.text,
+                    userEmail: emailController.text,
+                    isLogged: true));
+                // degisiklikler kaydedildikten sonra hesaba yeniden giris yaptirilmali
+              }
+            },
+            child: Container(
+              height: getProportionateScreenHeight(40),
+              decoration: BoxDecoration(
+                color: Colors.black87,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: const Center(
+                  child: Text(
+                'Değişiklikleri kaydet',
+                style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.white70,
+                    fontWeight: FontWeight.bold),
+              )),
             ),
-            child: const Center(
-                child: Text(
-              'Değişiklikleri kaydet',
-              style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.white70,
-                  fontWeight: FontWeight.bold),
-            )),
           ),
         ],
       ),
