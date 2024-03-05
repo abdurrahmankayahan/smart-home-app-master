@@ -143,7 +143,7 @@ class _BodyState extends State<Body> {
                   textCapitalization: TextCapitalization.words,
                   validator: (value) {
                     if (value!.isEmpty || value.trim().isEmpty) {
-                      return 'Name is required';
+                      return 'İsim bilgisi doldurulma';
                     }
                     return null;
                   },

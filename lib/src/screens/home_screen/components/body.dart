@@ -45,7 +45,7 @@ class Body extends StatelessWidget {
 
             Divider(),
             Container(
-              height: 360,
+              height: 410,
               child: FutureBuilder(
                 future: querry.getDeviceCompList(uid, sn),
                 builder: (BuildContext context,
@@ -149,7 +149,7 @@ class Body extends StatelessWidget {
           return Center(child: Text('No data'));
         },
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showDialog(

@@ -183,7 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                 ).toList(),
               ),
-              bottomNavigationBar: CustomBottomNavBar(model: model),
+              //bottomNavigationBar: CustomBottomNavBar(model: model),
             ),
           );
         });
