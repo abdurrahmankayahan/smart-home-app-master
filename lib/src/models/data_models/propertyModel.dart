@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+
 class PropertyModel {
 
 String? propertyName="";  
@@ -36,23 +37,26 @@ Function({String? val})? updateFunc;
 //  set setUpdateValue(VoidCallback updateValue) => this.updateValue = updateValue; 
 
 
- String? get getPropertyName => this.propertyName;
+  VoidCallback get getUpdateValue => this.updateValue!;
 
- set setPropertyName(String? propertyName) => this.propertyName = propertyName;
+  set setUpdateValue(VoidCallback updateValue) =>
+      this.updateValue = updateValue;
 
- String? get getPinNo => this.pinNo;
+  String? get getPropertyName => this.propertyName;
 
- set setPinNo(String? pinNo) => this.pinNo = pinNo;
+  set setPropertyName(String? propertyName) => this.propertyName = propertyName;
 
- String? get getPinIO => this.pinIO;
+  String? get getPinNo => this.pinNo;
 
- set setPinIO(String? pinIO) => this.pinIO = pinIO;
+  set setPinNo(String? pinNo) => this.pinNo = pinNo;
 
- String? get getPinVal => this.pinVal;
+  String? get getPinIO => this.pinIO;
 
- set setPinVal(String? pinVal) => this.pinVal = pinVal;
+  set setPinIO(String? pinIO) => this.pinIO = pinIO;
 
- 
- 
+  String? get getPinVal => this.pinVal;
 
+
+
+  set setItsOn(String? itsOn) => this.itsOn = itsOn;
 }
