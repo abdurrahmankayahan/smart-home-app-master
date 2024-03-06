@@ -6,6 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:smart360/config/size_config.dart';
 import 'package:smart360/helper/helper_function.dart';
 import 'package:smart360/provider/base_view.dart';
+import 'package:smart360/src/database/querry.dart';
 
 import 'package:smart360/src/screens/add_environment/add_environment.dart';
 
@@ -13,6 +14,7 @@ import 'package:smart360/src/models/data_models/userModel.dart';
 
 import 'package:smart360/src/screens/edit_profile/edit_profile.dart';
 import 'package:smart360/src/screens/manage_environment/manage_environment_screen.dart';
+
 import 'package:smart360/src/widgets/custom_bottom_nav_bar.dart';
 import 'package:smart360/view/home_screen_view_model.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,6 +23,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'components/body.dart';
 import 'package:smart360/src/screens/menu_page/menu_screen.dart';
+
+QuerryClass querry = QuerryClass();
 
 class HomeScreen extends StatefulHookWidget {
   static String routeName = '/home-screen';
@@ -32,49 +36,25 @@ class HomeScreen extends StatefulHookWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late final String email, username, userId;
+  late String email, username, userId;
 
   @override
   void initState() {
     super.initState();
     gettingUserData();
   }
-late UserModel user;
-  gettingUserData() async {
 
-    HelperFunctions hlp=HelperFunctions();
+  late UserModel user;
+  gettingUserData() async {
+    HelperFunctions hlp = HelperFunctions();
     hlp.initSP();
-user=await hlp.getUserModel() as UserModel;
-  
+    UserModel user = await hlp.getUserModel() as UserModel;
+
     setState(() {
       email = user.userEmail!;
       username = user.userName!;
       userId = user.userId!;
-
     });
-  }
-
-  Future<DataSnapshot> fetchData(String userId) async {
-    DataSnapshot snapshot = await databaseReference.child('$userId').get();
-
-    if (snapshot.exists) {
-      // Child varsa, verisini alın ve kullanın
-      return snapshot;
-      // Veri işleme kodunu buraya ekleyin
-    } else {
-      // Child yoksa, userId numarasını kaydedin
-      await databaseReference.child('$userId').child("devices").set({
-        '34434232': {
-          'components': {
-            'isik': {'pinIOStatus': 1, 'pinNumber': 2, 'value': 0}
-          },
-          'config': {'place': "conf", 'title': "Akıllı Sistemler"}
-        }
-      });
-      snapshot = await databaseReference.child('$userId').get();
-    }
-
-    return snapshot;
   }
 
   Future<Widget> db() async {
@@ -83,7 +63,7 @@ user=await hlp.getUserModel() as UserModel;
 //         .get();
 
     //  var s=await fetchData(userId);
-    var s = await fetchData(userId);
+    var s = await querry.fetchData(userId);
 
     return BaseView<HomeScreenViewModel>(
         onModelReady: (model) => {
@@ -181,7 +161,8 @@ user=await hlp.getUserModel() as UserModel;
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      const addEnvironmentScreen(),
+                                      //addEnvironmentScreen(userId:userId),
+                                      ManageEnvScreen(),
                                 ));
                           },
                           icon: Icon(Icons.add_home_work_rounded))
@@ -202,7 +183,7 @@ user=await hlp.getUserModel() as UserModel;
                   },
                 ).toList(),
               ),
-              bottomNavigationBar: CustomBottomNavBar(model: model),
+              //bottomNavigationBar: CustomBottomNavBar(model: model),
             ),
           );
         });

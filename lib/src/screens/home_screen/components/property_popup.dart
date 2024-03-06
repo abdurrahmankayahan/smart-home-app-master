@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:smart360/src/models/data_models/propertyModel.dart';
 import 'package:smart360/src/models/ext.dart';
 import 'package:smart360/src/screens/home_screen/components/body.dart';
 
@@ -221,19 +222,7 @@ class _PropertyPopupState extends State<PropertyPopup> {
           child: Text('SAVE'),
           onPressed: () {
             //widget.onSave(_newPropertyValue);
-              databaseReference.child(widget.userId).child("devices").child(widget.deviceSn).child("components").update(
-      {
-    propertyName:{
-        "pinIOStatus":itsOn,
-        "pinNumber":pinNo,
-        "value":pinVal,
-      }
-      }
-     
-      
-
-    
-  );
+querry.saveDeviceComp(widget.userId,widget.deviceSn,PropertyModel(propertyName: propertyName,itsOn: itsOn?"1":"0",pinNo: pinNo,pinIO: pinNo));
 
 
             Navigator.pop(context);

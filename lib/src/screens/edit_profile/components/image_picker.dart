@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -11,19 +12,25 @@ class UploadImage extends StatefulWidget {
 
 class _UploadImageState extends State<UploadImage> {
   File? _image;
+  FirebaseAuth auth = FirebaseAuth.instance;
   final ImagePicker _picker = ImagePicker();
 
-  // Future getImageFromCamera() async {
-  //   var image = await _picker.pickImage(source: ImageSource.camera);
-  //   setState(() {
-  //     imagePath = image as File?;
-  //   });
-  // }
+  Future getImageFromCamera() async {
+    var image = await _picker.pickImage(source: ImageSource.camera);
+    if (image == null) return;
+    setState(() {
+      _image = File(image.path);
+    });
+
+    // StorageReference referansYol = FirebaseStorage.instance.ref().child("profilresimleri").child(auth.currentUser!.uid).child("profilresimleri.png");
+  }
 
   Future getImageFromGallery() async {
     var image = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (image == null) return;
     setState(() {
-      _image = File(image!.path);
+      _image = File(image.path);
     });
   }
 

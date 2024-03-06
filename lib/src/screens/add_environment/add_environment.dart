@@ -1,10 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:smart360/src/database/querry.dart';
 
-class addEnvironmentScreen extends StatelessWidget {
+QuerryClass querry=QuerryClass();
+class addEnvironmentScreen extends StatefulHookWidget {
   static String routeName = '/addEnvironmentScreen';
-  final List<String> environments = const [
+  final String? userId;
+  @override
+  State<addEnvironmentScreen> createState() => _BodyState();
+
+  const addEnvironmentScreen({super.key , this.userId});
+}
+class _BodyState extends State<addEnvironmentScreen> {
+    final List<String> environments = const [
     'Çocuk odası',
     'Oturma odası',
     'Çalışma odası',
@@ -14,11 +24,39 @@ class addEnvironmentScreen extends StatelessWidget {
     'Mutfak',
     'Banyo',
   ];
+     List<String> environmentsAvailable =[];
 
-  const addEnvironmentScreen({super.key});
+  @override
+  void initState() {
+    getListName(widget.userId!);
+    super.initState();
+
+  }
+
+getListName(String userId)async{
+  List<String> tmps=await querry.getTabsName(userId);
+
+  setState(() {
+      environmentsAvailable=tmps;
+  });
+}
 
   @override
   Widget build(BuildContext context) {
+
+    useEffect(() {
+      if (environmentsAvailable.isEmpty) {
+        return () {
+          Center(child: CircularProgressIndicator());
+        };
+      }
+
+      return () {
+        print('HomeScreen disposed');
+      };
+    }, []);
+
+    
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -83,6 +121,31 @@ class addEnvironmentScreen extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
+            child: Text("Ortamların"),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: environmentsAvailable.length,
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    print("heyyyyy");
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      environmentsAvailable[index],
+                      style: TextStyle(fontSize: 25),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+       
+       Divider(),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
             child: Text("Önerilen ortam"),
           ),
           Expanded(
@@ -104,8 +167,14 @@ class addEnvironmentScreen extends StatelessWidget {
               },
             ),
           ),
+       
+       
+       
+       
+       
         ],
       ),
     );
   }
+  
 }

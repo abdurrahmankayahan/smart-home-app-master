@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:smart360/helper/helper_function.dart';
+import 'package:smart360/src/database/querry.dart';
+import 'package:smart360/src/models/data_models/userModel.dart';
 
-class ManageEnvScreen extends StatefulWidget {
+class ManageEnvScreen extends StatefulHookWidget {
   static String routeName = '/ManageEnvScreen';
   const ManageEnvScreen({super.key});
 
   @override
   State<ManageEnvScreen> createState() => _ManageEnvScreenState();
 }
-
+QuerryClass querry=QuerryClass();
 class _ManageEnvScreenState extends State<ManageEnvScreen> {
   late final String username, userId;
   late DatabaseReference _databaseReference;
@@ -19,27 +22,39 @@ class _ManageEnvScreenState extends State<ManageEnvScreen> {
   void initState() {
     super.initState();
     Firebase.initializeApp();
-    _databaseReference = FirebaseDatabase.instance.reference();
+    _databaseReference = FirebaseDatabase.instance.ref();
     gettingUserData();
   }
 
   gettingUserData() async {
-    late String un, uid;
-    await HelperFunctions.getUserNameFromSF().then((val) {
-      un = val!;
-    });
-    await HelperFunctions.getUserIdSF().then((val) {
-      uid = val!;
-    });
+HelperFunctions hlp=HelperFunctions();
+hlp.initSP;
+UserModel user=await hlp.getUserModel() as UserModel;
 
     setState(() {
-      username = un;
-      userId = uid;
+      username = user.userName!;
+      userId = user.userId!;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+   
+  
+    useEffect(() {
+      if (userId.isEmpty) {
+        return () {
+          Center(child: CircularProgressIndicator());
+        };
+      }
+
+      return () {
+        print('HomeScreen disposed');
+      };
+    }, []);
+   
+   
+   
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -73,28 +88,22 @@ class _ManageEnvScreenState extends State<ManageEnvScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: StreamBuilder<DatabaseEvent>(
-          stream: _databaseReference.child(userId).child("devices").onValue,
+        child: FutureBuilder(
+          future: querry.getTabsName(userId),
           builder:
-              (BuildContext context, AsyncSnapshot<DatabaseEvent> snapshot) {
+              (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
             if (snapshot.hasData) {
-              List<String> deviceTitles = [];
-              DataSnapshot dataSnapshot = snapshot.data!.snapshot;
-              Map<dynamic, dynamic> values =
-                  dataSnapshot.value as Map<dynamic, dynamic>;
-              values.forEach((key, value) {
-                Map<dynamic, dynamic> device = value as Map<dynamic, dynamic>;
-                String title = device["config"]["title"];
-                deviceTitles.add(title);
-              });
-              return ListView.builder(
-                itemCount: deviceTitles.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(deviceTitles[index]),
-                  );
-                },
-              );
+     return ListView(
+children: snapshot.data!.map((e) => 
+      ListTile( title: Text(e),)
+
+     
+     ).toList(),
+
+     );
+
+
+
             } else {
               return const Center(
                 child: CircularProgressIndicator(),
