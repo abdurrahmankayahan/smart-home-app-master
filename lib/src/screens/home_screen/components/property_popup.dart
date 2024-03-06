@@ -10,17 +10,17 @@ import 'package:smart360/src/screens/home_screen/components/body.dart';
 class PropertyPopup extends StatefulWidget {
   final String userId;
   final String deviceSn;
-  final String propertyValue;
-  final bool itsOn;
+  final PropertyModel propertyModel;
+
   final Function(String) onSave;
 
   const PropertyPopup({
     Key? key,
     required this.userId,
     required this.deviceSn,
-    required this.propertyValue,
+    required this.propertyModel,
     required this.onSave,
-    required this.itsOn,
+    
   }) : super(key: key);
 
   @override
@@ -28,18 +28,17 @@ class PropertyPopup extends StatefulWidget {
 }
 
 class _PropertyPopupState extends State<PropertyPopup> {
-  String _selectedIcon = 'assets/images/blue.png';
+  final PropertyModel propertyModel=PropertyModel();
+ String _selectedIcon = 'assets/images/blue.png';
   bool itsOn = false;
-  late String propertyName;
-  late String pinNo;
-  late String pinVal;
+
   late String place="";
 
   late List<String> uri;
   @override
   void initState() {
     super.initState();
-    itsOn = widget.itsOn;
+    itsOn = widget.propertyModel.pinVal=="0"?false:true;
     //_newPropertyValue = widget.propertyValue;
   }
 
@@ -67,33 +66,33 @@ class _PropertyPopupState extends State<PropertyPopup> {
           TextField(
             decoration: InputDecoration(
               labelText: "Özellik Adı",
-              hintText: widget.propertyValue,
+              hintText: widget.propertyModel.propertyName,
             ),
             onChanged: (value) {
               setState(() {
-                propertyName = value;
+                 propertyModel.propertyName=value ;
               });
             },
           ),
           TextField(
             decoration: InputDecoration(
               labelText: "Pin Numarası",
-              hintText: widget.propertyValue,
+              hintText: widget.propertyModel.getPinNo,
             ),
             onChanged: (value) {
               setState(() {
-                pinNo = value;
+                propertyModel.pinNo = value;
               });
             },
           ),
           TextField(
             decoration: InputDecoration(
               labelText: "Varsayılan Değer",
-              hintText: widget.propertyValue,
+              hintText: widget.propertyModel.getPinVal,
             ),
             onChanged: (value) {
               setState(() {
-                pinVal = value;
+                propertyModel.pinVal = value;
               });
             },
           ),
@@ -222,7 +221,13 @@ class _PropertyPopupState extends State<PropertyPopup> {
           child: Text('SAVE'),
           onPressed: () {
             //widget.onSave(_newPropertyValue);
-querry.saveDeviceComp(widget.userId,widget.deviceSn,PropertyModel(propertyName: propertyName,itsOn: itsOn?"1":"0",pinNo: pinNo,pinIO: pinNo));
+querry.saveDeviceComp(widget.userId,widget.deviceSn,
+PropertyModel(
+  propertyName: propertyModel.propertyName,
+  pinVal: itsOn?"1":"0",
+  pinNo: propertyModel.pinNo,
+  pinIO: propertyModel.pinIO
+  ));
 
 
             Navigator.pop(context);

@@ -13,7 +13,9 @@ class ManageEnvScreen extends StatefulHookWidget {
   @override
   State<ManageEnvScreen> createState() => _ManageEnvScreenState();
 }
-QuerryClass querry=QuerryClass();
+
+QuerryClass querry = QuerryClass();
+
 class _ManageEnvScreenState extends State<ManageEnvScreen> {
   late final String username, userId;
   late DatabaseReference _databaseReference;
@@ -27,9 +29,9 @@ class _ManageEnvScreenState extends State<ManageEnvScreen> {
   }
 
   gettingUserData() async {
-HelperFunctions hlp=HelperFunctions();
-hlp.initSP;
-UserModel user=await hlp.getUserModel() as UserModel;
+    HelperFunctions hlp = HelperFunctions();
+    hlp.initSP;
+    UserModel user = await hlp.getUserModel() as UserModel;
 
     setState(() {
       username = user.userName!;
@@ -39,8 +41,6 @@ UserModel user=await hlp.getUserModel() as UserModel;
 
   @override
   Widget build(BuildContext context) {
-   
-  
     useEffect(() {
       if (userId.isEmpty) {
         return () {
@@ -52,9 +52,7 @@ UserModel user=await hlp.getUserModel() as UserModel;
         print('HomeScreen disposed');
       };
     }, []);
-   
-   
-   
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -93,17 +91,13 @@ UserModel user=await hlp.getUserModel() as UserModel;
           builder:
               (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
             if (snapshot.hasData) {
-     return ListView(
-children: snapshot.data!.map((e) => 
-      ListTile( title: Text(e),)
-
-     
-     ).toList(),
-
-     );
-
-
-
+              return ListView(
+                children: snapshot.data!
+                    .map((e) => ListTile(
+                          title: Text(e),
+                        ))
+                    .toList(),
+              );
             } else {
               return const Center(
                 child: CircularProgressIndicator(),

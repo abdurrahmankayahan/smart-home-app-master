@@ -146,10 +146,9 @@ class Body extends StatelessWidget {
                         context: context,
                         builder: (context) {
                           return PropertyPopup(
-                            itsOn: false,
                             userId: uid,
                             deviceSn: sn,
-                            propertyValue: 'Initial Value',
+                           propertyModel: PropertyModel(),
                             onSave: (newValue) {
                               // Handle property save
                             },

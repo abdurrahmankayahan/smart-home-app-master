@@ -1,24 +1,29 @@
 import 'dart:ui';
 
 class PropertyModel {
+
 String? propertyName="";  
+String? iconUrl="";
 String? pinNo="";
 String? pinIO="";
 String? pinVal="";
-String? itsOn="";
+
+
+
 
 Function({String? val})? updateFunc;
 
-VoidCallback? updateValue;
+// VoidCallback? updateValue;
 
 
  PropertyModel({
      this. propertyName="",
+     this. iconUrl="",
      this. pinNo="",
      this. pinIO="",
-     this.pinVal="",
-     this. itsOn="",
-    this.updateValue,
+     this. pinVal="",
+  
+    // this.updateValue,
     this.updateFunc,
   });
 
@@ -26,9 +31,9 @@ VoidCallback? updateValue;
 
  set setUpdateFunc(Function(String? updateFunc)) => this.updateFunc = updateFunc;
 
- VoidCallback get getUpdateValue => this.updateValue!;
+//  VoidCallback get getUpdateValue => this.updateValue!;
 
- set setUpdateValue(VoidCallback updateValue) => this.updateValue = updateValue; 
+//  set setUpdateValue(VoidCallback updateValue) => this.updateValue = updateValue; 
 
 
  String? get getPropertyName => this.propertyName;
@@ -47,9 +52,7 @@ VoidCallback? updateValue;
 
  set setPinVal(String? pinVal) => this.pinVal = pinVal;
 
- String? get getItsOn => this.itsOn;
-
- set setItsOn(String? itsOn) => this.itsOn = itsOn;
+ 
  
 
 }
