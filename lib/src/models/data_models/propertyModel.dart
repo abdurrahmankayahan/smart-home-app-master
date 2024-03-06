@@ -1,32 +1,41 @@
 import 'dart:ui';
 
-import 'package:get_it/get_it.dart';
 
 class PropertyModel {
-  String? propertyName = "";
-  String? pinNo = "";
-  String? pinIO = "";
-  String? pinVal = "";
-  String? itsOn = "";
 
-  Function({String? val})? updateFunc;
+String? propertyName="";  
+String? iconUrl="";
+String? pinNo="";
+String? pinIO="";
+String? pinVal="";
 
-  VoidCallback? updateValue;
 
-  PropertyModel({
-    this.propertyName = "",
-    this.pinNo = "",
-    this.pinIO = "",
-    this.pinVal = "",
-    this.itsOn = "",
-    this.updateValue,
+
+
+Function({String? val})? updateFunc;
+
+// VoidCallback? updateValue;
+
+
+ PropertyModel({
+     this. propertyName="",
+     this. iconUrl="",
+     this. pinNo="",
+     this. pinIO="",
+     this. pinVal="",
+  
+    // this.updateValue,
     this.updateFunc,
   });
 
-  Function({String? val}) get getUpdateFunc => this.updateFunc!;
+ Function({String? val}) get getUpdateFunc => this.updateFunc!;
 
-  set setUpdateFunc(Function(String? updateFunc)) =>
-      this.updateFunc = updateFunc;
+ set setUpdateFunc(Function(String? updateFunc)) => this.updateFunc = updateFunc;
+
+//  VoidCallback get getUpdateValue => this.updateValue!;
+
+//  set setUpdateValue(VoidCallback updateValue) => this.updateValue = updateValue; 
+
 
   VoidCallback get getUpdateValue => this.updateValue!;
 
@@ -47,9 +56,7 @@ class PropertyModel {
 
   String? get getPinVal => this.pinVal;
 
-  set setPinVal(String? pinVal) => this.pinVal = pinVal;
 
-  String? get getItsOn => this.itsOn;
 
   set setItsOn(String? itsOn) => this.itsOn = itsOn;
 }
