@@ -24,8 +24,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'components/body.dart';
 import 'package:smart360/src/screens/menu_page/menu_screen.dart';
 
+QuerryClass querry = QuerryClass();
 
-QuerryClass querry=QuerryClass();
 class HomeScreen extends StatefulHookWidget {
   static String routeName = '/home-screen';
 
@@ -36,28 +36,26 @@ class HomeScreen extends StatefulHookWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late final String email, username, userId;
+  late String email, username, userId;
 
   @override
   void initState() {
     super.initState();
     gettingUserData();
   }
-late UserModel user;
-  gettingUserData() async {
 
-    HelperFunctions hlp=HelperFunctions();
+  late UserModel user;
+  gettingUserData() async {
+    HelperFunctions hlp = HelperFunctions();
     hlp.initSP();
-user=await hlp.getUserModel() as UserModel;
-  
+    UserModel user = await hlp.getUserModel() as UserModel;
+
     setState(() {
       email = user.userEmail!;
       username = user.userName!;
       userId = user.userId!;
-
     });
   }
-
 
   Future<Widget> db() async {
 //  var s = await databaseReference
@@ -163,8 +161,8 @@ user=await hlp.getUserModel() as UserModel;
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                       //addEnvironmentScreen(userId:userId),
-                                       ManageEnvScreen(),
+                                      //addEnvironmentScreen(userId:userId),
+                                      ManageEnvScreen(),
                                 ));
                           },
                           icon: Icon(Icons.add_home_work_rounded))
@@ -185,7 +183,7 @@ user=await hlp.getUserModel() as UserModel;
                   },
                 ).toList(),
               ),
-              bottomNavigationBar: CustomBottomNavBar(model: model),
+              //bottomNavigationBar: CustomBottomNavBar(model: model),
             ),
           );
         });

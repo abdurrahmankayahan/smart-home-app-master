@@ -11,18 +11,18 @@ import 'package:flutter/material.dart';
 
 import 'dark_container.dart';
 
+QuerryClass querry = QuerryClass();
 
-QuerryClass querry=QuerryClass();
 class Body extends StatelessWidget {
-  final HomeScreenViewModel model;
-  final String uid;
-  final String sn;
   const Body(
       {Key? key, required this.model, required this.sn, required this.uid})
       : super(key: key);
 
-  Future<Widget> db(BuildContext context) async {
+  final HomeScreenViewModel model;
+  final String sn;
+  final String uid;
 
+  Future<Widget> db(BuildContext context) async {
     return SingleChildScrollView(
       child: Container(
         padding: EdgeInsets.symmetric(
@@ -42,153 +42,147 @@ class Body extends StatelessWidget {
               padding: EdgeInsets.all(getProportionateScreenHeight(5)),
               child: SavingsContainer(model: model),
             ),
-            
+
+            Divider(),
             Container(
-              height: 200,
-               child: FutureBuilder(
-    future: querry.getDeviceComp(uid, sn),
-    builder: (BuildContext context, AsyncSnapshot<DataSnapshot> snapshot) {
-      if (snapshot.hasData) {
-        return GridView.count(
-          crossAxisCount: 2,
-          children: snapshot.data!.children.map((e) 
-          {return Padding(
-            padding: EdgeInsets.all(getProportionateScreenHeight(5)),
-            child: DarkContainer(
-              itsOn: (e.child("value").value.toString() == "0"
-                  ? false
-                  : true),
-              switchButton: () {
-                e.ref.update({
-                  'value':
-                      e.child("value").value.toString() == "0"
-                          ? 1
-                          : 0
-                });
-                model.onRefresh();
-              },
-              onTap: () {
-                // Handle fan switch
+              height: 410,
+              child: FutureBuilder(
+                future: querry.getDeviceCompList(uid, sn),
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<PropertyModel>> snapshot) {
+                  if (snapshot.hasData) {
+                    return GridView.count(
+                      crossAxisCount: 2,
+                      children: snapshot.data!.map((e) {
+                        return Padding(
+                          padding:
+                              EdgeInsets.all(getProportionateScreenHeight(5)),
+                          child: DarkContainer(
+                            propertyModel: e,
+                            //itsOn: (e.pinVal == "0" ? false : true),
+                            onTap: () {
+                              // Handle fan switch
 
-                // TODO: set setting page  for  your  property
-              },
-              iconAsset: 'assets/icons/svg/fan.svg',
-              device: e.key.toString(),
-              deviceCount: '2 cihaz',
-              switchFav: model.fanFav,
-              isFav: model.isFanFav,
-            ),
-      );}).toList(),
-        );
-      } else {
-        return CircularProgressIndicator();
-      }
-    },
-  ),
-                        
-              
-            ),
-           
-           Divider(),
-  Container(
-              height: 200,
-               child: FutureBuilder(
-    future: querry.getDeviceCompList(uid, sn),
-    builder: (BuildContext context, AsyncSnapshot<List<PropertyModel>> snapshot) {
-      if (snapshot.hasData) {
-        return GridView.count(
-          crossAxisCount: 2,
-          children: snapshot.data!.map((e) 
-          {return Padding(
-            padding: EdgeInsets.all(getProportionateScreenHeight(5)),
-            child: DarkContainer(
-              itsOn: (e.pinVal == "0"
-                  ? false
-                  : true),
-              switchButton: () {
-                e.getUpdateFunc();
-               // model.onRefresh();
-                
-              },
-              onTap: () {
-                // Handle fan switch
-
-                // TODO: set setting page  for  your  property
-              },
-              iconAsset: 'assets/icons/svg/fan.svg',
-              device: e.propertyName!,
-              deviceCount: '2 cihaz',
-              switchFav: model.fanFav,
-              isFav: model.isFanFav,
-            ),
-      );}).toList(),
-        );
-      } else {
-        return CircularProgressIndicator();
-      }
-    },
-  ),
-                        
-              
-            ),
-           
-           
-
-            Row(children: [
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.all(getProportionateScreenHeight(5)),
-                  child: DarkContainer(
-                    itsOn: null,
-                    switchButton: () {},
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return PropertyPopup(
-                            userId: uid,
-                            deviceSn: sn,
-                           propertyModel: PropertyModel(),
-                            onSave: (newValue) {
-                              // Handle property save
+                              // TODO: set setting page  for  your  property
                             },
-                          );
-                        },
-                      );
+                            iconAsset: "assets/icons/menu_icons/devices.svg",
 
-                      // TODO: set setting page  for  your  property
-                    },
-                    iconAsset: 'assets/icons/svg/info.svg',
-                    device: "Yeni Özellik Ekle",
-                    deviceCount: 'Özellik eklemek için dokun',
-                    switchFav: () {},
-                    isFav: model.isFanFav,
-                  ),
-                ),
-              )
-            ]),
+
+                            switchButton: () {
+                              e.getUpdateFunc();
+                              model.onRefresh();
+
+                            },
+                            isFav: false,
+                            switchFav: () {},
+                            //iconAsset: 'assets/icons/svg/fan.svg',
+                            //device: e.propertyName!,
+                            //switchFav: model.fanFav,
+                            //isFav: model.isFanFav,
+                            //sensorValue: "dennnnn",
+                          ),
+                        );
+                      }).toList(),
+                    );
+                  } else {
+                    return CircularProgressIndicator();
+                  }
+                },
+              ),
+            ),
+            // Row(children: [
+            //   Expanded(
+            //     child: Pdding(
+            //       padding: EdgeInsets.all(getProportionateScreenHeight(5)),
+            //       child: DarkContaainer(
+            //         itsOn: null,
+            //         switchButton: () {},
+            //         onTap: () {
+            //           showDialog(
+            //             context: context,
+            //             builder: (context) {
+            //               return PropertyPopup(
+            //                 itsOn: false,
+            //                 userId: uid,
+            //                 deviceSn: sn,
+            //                 propertyValue: 'Initial Value',
+            //                 onSave: (newValue) {
+            //                   // Handle property save
+            //                 },
+            //               );
+            //             },
+            //           );
+
+            //           // TODO: set setting page  for  your  property
+            //         },
+            //         iconAsset: 'assets/icons/svg/info.svg',
+            //         device: "Yeni Özellik Ekle",
+            //         //deviceCount: 'Özellik eklemek için dokun',
+            //         switchFav: () {},
+            //         isFav: model.isFanFav,
+            //         sensorValue: "deneme3",
+            //       ),
+            //     ),
+            //   )
+            // ]),
           ],
         ),
       ),
     );
   }
 
+  //////
+  ///
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: db(context),
-      builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        }
-        if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        }
-        if (snapshot.hasData) {
-          return snapshot.data!;
-        }
-        return Center(child: Text('No data'));
-      },
+    return Scaffold(
+      body: FutureBuilder(
+        future: db(context),
+        builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+          if (snapshot.hasData) {
+            return snapshot.data!;
+          }
+          return Center(child: Text('No data'));
+        },
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return PropertyPopup(
+                itsOn: false,
+                userId: uid,
+                deviceSn: sn,
+                propertyValue: 'Initial Value',
+                onSave: (newValue) {
+                  // Handle property save
+                },
+              );
+            },
+          );
+        },
+        backgroundColor: Colors.amber,
+        heroTag: 'AlertDialog',
+        child: const Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.add, color: Colors.black),
+            SizedBox(height: 2),
+            Text("Özellik ",
+                style: TextStyle(fontSize: 12, color: Colors.black)),
+            SizedBox(height: 1),
+            Text("ekle", style: TextStyle(fontSize: 12, color: Colors.black)),
+          ],
+        ),
+      ),
     );
   }
 }
