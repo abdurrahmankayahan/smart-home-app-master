@@ -123,7 +123,7 @@ class QuerryClass {
       pm.propertyName!: {
         "pinIOStatus": pm.pinIO!,
         "pinNumber": pm.pinNo!,
-        "value": pm.itsOn!,
+        "value": pm.pinVal!,
       }
     });
   }
