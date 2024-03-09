@@ -32,7 +32,7 @@ class QuerryClass {
 
   signIn(BuildContext context, String email, String password) async {
     final snap = await userIsAvailable(email);
-//TODO: Querrrysnpshot
+    //TODO: Querrrysnpshot
     if (snap.docs.length > 0) {
       final doc = snap.docs[0];
 
@@ -105,7 +105,6 @@ class QuerryClass {
                       'value': val ??
                           (tmp.child("value").value.toString() == "0" ? 1 : 0)
                     })
-                    
                   }),
             ))
         .toList();
@@ -125,6 +124,15 @@ class QuerryClass {
         "pinNumber": pm.pinNo!,
         "value": pm.pinVal!,
       }
+    });
+  }
+
+  manageProfile(UserModel um) {
+    CollectionReference usersCollection =
+        FirebaseFirestore.instance.collection('users');
+    usersCollection.doc(um.userId).update({
+      'email': um.userEmail,
+      'name': um.userName,
     });
   }
 

@@ -16,9 +16,9 @@ class Tema {
     );
   }
 
-  inputBoxDec() {
+  inputBoxDec({Color? boxColor}) {
     return BoxDecoration(
-      color: renk("333443"),
+      color: boxColor ?? renk("333443"),
       borderRadius: BorderRadius.circular(20),
     );
   }

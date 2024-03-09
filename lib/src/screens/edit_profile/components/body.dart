@@ -38,16 +38,6 @@ class _BodyState extends State<Body> {
     });
   }
 
-  Future<void> ManageProfile() async {
-    CollectionReference usersCollection =
-        FirebaseFirestore.instance.collection('users');
-    print(nameController.text);
-    await usersCollection.doc(user.userId).update({
-      'email': emailController.text,
-      'name': nameController.text,
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -240,15 +230,21 @@ class _BodyState extends State<Body> {
           InkWell(
             onTap: () async {
               if (_formKey.currentState!.validate()) {
-                await ManageProfile();
+                user.userName = nameController.text;
+                user.userEmail = emailController.text;
+
+                await querry.manageProfile(user);
+
+                // UserModel(
+
+                //   userName: nameController.text,
+                //   userEmail: emailController.text,
+                //   userId: user.userId));
 
                 HelperFunctions hlp = HelperFunctions();
                 hlp.initSP();
 
-                hlp.setUserInfo(UserModel(
-                    userName: nameController.text,
-                    userEmail: emailController.text,
-                    isLogged: true));
+                hlp.setUserInfo(user);
                 // degisiklikler kaydedildikten sonra hesaba yeniden giris yaptirilmali
               }
             },
