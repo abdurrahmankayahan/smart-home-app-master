@@ -67,9 +67,11 @@ class Body extends StatelessWidget {
                             },
                             iconAsset: "assets/icons/menu_icons/devices.svg",
 
+
                             switchButton: () {
                               e.getUpdateFunc();
                               model.onRefresh();
+
                             },
                             isFav: false,
                             switchFav: () {
