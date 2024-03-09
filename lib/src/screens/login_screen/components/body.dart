@@ -1,5 +1,3 @@
-
-
 import 'package:smart360/config/size_config.dart';
 import 'package:smart360/src/database/querry.dart';
 import 'package:smart360/src/screens/splash_screen/splash_screen.dart';
@@ -17,7 +15,7 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
-  QuerryClass querry=QuerryClass();
+  QuerryClass querry = QuerryClass();
   Tema tema = Tema();
   bool sifre_gozukme = false;
 
@@ -26,18 +24,13 @@ class _BodyState extends State<Body> {
   late String user, email, password, department = "";
   late String username;
 
-
   @override
   void initState() {
     super.initState();
-
   }
-
- 
 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -125,9 +118,10 @@ class _BodyState extends State<Body> {
                             sifre_gozukme = !sifre_gozukme;
                           });
                         },
-                        icon: Icon(!sifre_gozukme? Icons.remove_red_eye_outlined:Icons.remove_red_eye),
+                        icon: Icon(!sifre_gozukme
+                            ? Icons.remove_red_eye_outlined
+                            : Icons.remove_red_eye),
                         color: renk(metin_renk),
-                        
                       ),
                     ],
                   ),
@@ -150,7 +144,7 @@ class _BodyState extends State<Body> {
                         onTap: () async {
                           if (formkey.currentState!.validate()) {
                             formkey.currentState!.save();
-                            querry.signIn(context,email,password);
+                            querry.signIn(context, email, password);
                           }
                         },
                         child: Center(
@@ -181,7 +175,8 @@ class _BodyState extends State<Body> {
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                Navigator.pushNamed(context,SplashScreen.routeName);
+                                Navigator.pushNamed(
+                                    context, SplashScreen.routeName);
                               },
                           ),
                         ],
@@ -197,6 +192,4 @@ class _BodyState extends State<Body> {
       ),
     );
   }
-
-
 }
