@@ -32,7 +32,7 @@ class QuerryClass {
 
   signIn(BuildContext context, String email, String password) async {
     final snap = await userIsAvailable(email);
-//TODO: Querrrysnpshot
+    //TODO: Querrrysnpshot
     if (snap.docs.length > 0) {
       final doc = snap.docs[0];
 
@@ -127,6 +127,15 @@ class QuerryClass {
     });
   }
 
+  manageProfile(UserModel um) {
+    CollectionReference usersCollection =
+        FirebaseFirestore.instance.collection('users');
+    usersCollection.doc(um.userId).update({
+      'email': um.userEmail,
+      'name': um.userName,
+    });
+
+    
   Future<List<String>> getTabsBody(String userId) async {
     var data = await fetchData(userId);
 
@@ -135,6 +144,7 @@ class QuerryClass {
         .children
         .map((tmp) => tmp.key.toString())
         .toList();
+
   }
 
   Future<List<String>> getTabsName(String userId) async {

@@ -112,16 +112,6 @@ class DarkContainer extends StatelessWidget {
                               : Colors.black,
                         ),
                   ),
-                  // Text(
-                  //   deviceCount,
-                  //   textAlign: TextAlign.left,
-                  //   style: const TextStyle(
-                  //       color: Color.fromRGBO(166, 166, 166, 1),
-                  //       fontSize: 13,
-                  //       letterSpacing: 0,
-                  //       fontWeight: FontWeight.normal,
-                  //       height: 1.6),
-                  // ),
                 ],
               ),
               propertyModel.getPinIO == "1"
@@ -194,13 +184,6 @@ class DarkContainer extends StatelessWidget {
                       children: [
                         Text(
                           propertyModel.getPinVal.toString(),
-                          // device == "Isik"
-                          //     ? sensorValue + " °C"
-                          //     : device == "nem"
-                          //         ? "$sensorValue %"
-                          //         : device == "gaz"
-                          //             ? "$sensorValue ppm"
-                          //             : sensorValue,
                           textAlign: TextAlign.left,
                           style: Theme.of(context)
                               .textTheme

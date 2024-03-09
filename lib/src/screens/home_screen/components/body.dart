@@ -78,7 +78,9 @@ class Body extends StatelessWidget {
                               model.onRefresh();
                             },
                             isFav: false,
-                            switchFav: () {},
+                            switchFav: () {
+                              print("sefsedds");
+                            },
                             //iconAsset: 'assets/icons/svg/fan.svg',
                             //device: e.propertyName!,
                             //switchFav: model.fanFav,
