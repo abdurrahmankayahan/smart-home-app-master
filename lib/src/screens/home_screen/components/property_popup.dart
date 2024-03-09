@@ -42,8 +42,10 @@ class _PropertyPopupState extends State<PropertyPopup> {
   @override
   void initState() {
     super.initState();
-    itsOn = widget.itsOn;
-    fetchComponents();
+
+    itsOn = widget.propertyModel.pinIO=="0"?false:true;
+     fetchComponents();
+
     //_newPropertyValue = widget.propertyValue;
   }
 
@@ -80,6 +82,7 @@ class _PropertyPopupState extends State<PropertyPopup> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
@@ -95,6 +98,62 @@ class _PropertyPopupState extends State<PropertyPopup> {
           height: MediaQuery.of(context).size.height * 0.55,
           child: Form(
             key: _formKey,
+
+      backgroundColor: Colors.blueGrey,
+      title: Text("Özellik Ekle("+widget.deviceSn+")"),
+      content: Column(
+        children: [
+          TextField(
+            controller:TextEditingController(text: widget.propertyModel.propertyName),
+            decoration: InputDecoration(
+              labelText: "Özellik Adı",
+              hintText: widget.propertyModel.propertyName,
+            ),
+            onChanged: (value) {
+              setState(() {
+                 propertyModel.propertyName=value ;
+              });
+            },
+          ),
+          TextField(
+            controller:TextEditingController(text: widget.propertyModel.getPinNo),
+
+            decoration: InputDecoration(
+              labelText: "Pin Numarası",
+              hintText: widget.propertyModel.getPinNo,
+            ),
+            onChanged: (value) {
+              setState(() {
+                propertyModel.pinNo = value;
+              });
+            },
+            
+          ),
+          TextField(
+            controller:TextEditingController(text: widget.propertyModel.getPinVal),
+
+            decoration: InputDecoration(
+              labelText: "Varsayılan Değer",
+              hintText: widget.propertyModel.getPinVal,
+            ),
+            onChanged: (value) {
+              setState(() {
+                propertyModel.pinVal = value;
+              });
+            },
+          ),
+          Container(
+            margin: const EdgeInsets.only(top: 15),
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.black12,
+              border: Border.all(
+                color: const Color.fromRGBO(255, 255, 255, 1),
+                width: 0,
+              ),
+            ),
+
             child: Column(
               children: [
                 Container(

@@ -1,14 +1,10 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:smart360/config/size_config.dart';
 import 'package:smart360/src/database/querry.dart';
 import 'package:smart360/src/models/data_models/propertyModel.dart';
 import 'package:smart360/src/screens/home_screen/components/property_popup.dart';
 import 'package:smart360/src/screens/home_screen/components/savings_container.dart';
-import 'package:smart360/src/screens/home_screen/components/weather_container.dart';
-
 import 'package:smart360/view/home_screen_view_model.dart';
 import 'package:flutter/material.dart';
-
 import 'dark_container.dart';
 
 QuerryClass querry = QuerryClass();
@@ -61,17 +57,25 @@ class Body extends StatelessWidget {
                             propertyModel: e,
                             //itsOn: (e.pinVal == "0" ? false : true),
                             onTap: () {
-                              // Handle fan switch
-
-                              // TODO: set setting page  for  your  property
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return PropertyPopup(
+                                    propertyModel: e,
+                                    userId: uid,
+                                    deviceSn: sn,
+                                    onSave: (newValue) {
+                                      // Handle property save
+                                    },
+                                  );
+                                },
+                              );
                             },
                             iconAsset: "assets/icons/menu_icons/devices.svg",
-
 
                             switchButton: () {
                               e.getUpdateFunc();
                               model.onRefresh();
-
                             },
                             isFav: false,
                             switchFav: () {
@@ -87,7 +91,11 @@ class Body extends StatelessWidget {
                       }).toList(),
                     );
                   } else {
-                    return CircularProgressIndicator();
+                    return Expanded(
+                        child: Center(
+                            child: CircularProgressIndicator(
+                      color: Colors.amber,
+                    )));
                   }
                 },
               ),
@@ -142,7 +150,12 @@ class Body extends StatelessWidget {
         future: db(context),
         builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return Center(
+                child: Expanded(
+                    child: Center(
+                        child: CircularProgressIndicator(
+              color: Colors.amber,
+            ))));
           }
           if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
@@ -153,17 +166,16 @@ class Body extends StatelessWidget {
           return Center(child: Text('No data'));
         },
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showDialog(
             context: context,
             builder: (context) {
               return PropertyPopup(
-                itsOn: false,
+                propertyModel: PropertyModel(),
                 userId: uid,
                 deviceSn: sn,
-                propertyValue: 'Initial Value',
                 onSave: (newValue) {
                   // Handle property save
                 },
@@ -177,11 +189,11 @@ class Body extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.add, color: Colors.black),
-            SizedBox(height: 2),
-            Text("Özellik ",
-                style: TextStyle(fontSize: 12, color: Colors.black)),
-            SizedBox(height: 1),
-            Text("ekle", style: TextStyle(fontSize: 12, color: Colors.black)),
+            // SizedBox(height: 2),
+            // Text("Özellik ",
+            //     style: TextStyle(fontSize: 12, color: Colors.black)),
+            // SizedBox(height: 1),
+            // Text("ekle", style: TextStyle(fontSize: 12, color: Colors.black)),
           ],
         ),
       ),

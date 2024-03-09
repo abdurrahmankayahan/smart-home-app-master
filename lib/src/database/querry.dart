@@ -134,6 +134,17 @@ class QuerryClass {
       'email': um.userEmail,
       'name': um.userName,
     });
+
+    
+  Future<List<String>> getTabsBody(String userId) async {
+    var data = await fetchData(userId);
+
+   return data
+        .child("devices")
+        .children
+        .map((tmp) => tmp.key.toString())
+        .toList();
+
   }
 
   Future<List<String>> getTabsName(String userId) async {
