@@ -32,7 +32,7 @@ class _BodyState extends State<Body> {
 
   late String user, email, password, name, department = "";
   final formkey = GlobalKey<FormState>();
-  QuerryClass querry=QuerryClass();
+  QuerryClass querry = QuerryClass();
   AuthService authService = AuthService();
 
   @override
@@ -123,7 +123,9 @@ class _BodyState extends State<Body> {
                                   sifre_gozukme = !sifre_gozukme;
                                 });
                               },
-                              icon: Icon(!sifre_gozukme? Icons.remove_red_eye_outlined:Icons.remove_red_eye),
+                              icon: Icon(!sifre_gozukme
+                                  ? Icons.remove_red_eye_outlined
+                                  : Icons.remove_red_eye),
                               color: renk(metin_renk)),
                         ],
                       ),
@@ -220,19 +222,15 @@ class _BodyState extends State<Body> {
           if (value == true) {
             // saving the shared preference state
 
-            HelperFunctions hlp= HelperFunctions();
-          hlp.initSP();
+            HelperFunctions hlp = HelperFunctions();
+            hlp.initSP();
 
+            hlp.setUserInfo(
+                UserModel(userName: name, userEmail: email, isLogged: true));
 
-          hlp.setUserInfo(UserModel(userName: name,userEmail: email,isLogged: true));
-       
-       
             // await HelperFunctions.saveUserLoggedInStatus(true);
             // await HelperFunctions.saveUserEmailSF(email);
             // await HelperFunctions.saveUserNameSF(name);
-
-
-
 
             Navigator.of(context).pushNamed(HomeScreen.routeName);
             formkey.currentState!.reset();
@@ -250,6 +248,5 @@ class _BodyState extends State<Body> {
 
 // Kullanıcının Firestore'a verilerini kaydetme
 void saveUserDataToFirestore(UserModel userModel) async {
-QuerryClass().newUser(userModel);
-
+  QuerryClass().newUser(userModel);
 }
