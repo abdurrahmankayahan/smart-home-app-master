@@ -38,7 +38,7 @@ class _PropertyPopupState extends State<PropertyPopup> {
   @override
   void initState() {
     super.initState();
-    itsOn = widget.propertyModel.pinVal=="0"?false:true;
+    itsOn = widget.propertyModel.pinIO=="0"?false:true;
     //_newPropertyValue = widget.propertyValue;
   }
 
@@ -64,6 +64,7 @@ class _PropertyPopupState extends State<PropertyPopup> {
       content: Column(
         children: [
           TextField(
+            controller:TextEditingController(text: widget.propertyModel.propertyName),
             decoration: InputDecoration(
               labelText: "Özellik Adı",
               hintText: widget.propertyModel.propertyName,
@@ -75,6 +76,8 @@ class _PropertyPopupState extends State<PropertyPopup> {
             },
           ),
           TextField(
+            controller:TextEditingController(text: widget.propertyModel.getPinNo),
+
             decoration: InputDecoration(
               labelText: "Pin Numarası",
               hintText: widget.propertyModel.getPinNo,
@@ -84,8 +87,11 @@ class _PropertyPopupState extends State<PropertyPopup> {
                 propertyModel.pinNo = value;
               });
             },
+            
           ),
           TextField(
+            controller:TextEditingController(text: widget.propertyModel.getPinVal),
+
             decoration: InputDecoration(
               labelText: "Varsayılan Değer",
               hintText: widget.propertyModel.getPinVal,

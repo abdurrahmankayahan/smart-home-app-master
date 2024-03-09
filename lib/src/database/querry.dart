@@ -105,7 +105,6 @@ class QuerryClass {
                       'value': val ??
                           (tmp.child("value").value.toString() == "0" ? 1 : 0)
                     })
-                    
                   }),
             ))
         .toList();
@@ -126,6 +125,16 @@ class QuerryClass {
         "value": pm.pinVal!,
       }
     });
+  }
+
+  Future<List<String>> getTabsBody(String userId) async {
+    var data = await fetchData(userId);
+
+   return data
+        .child("devices")
+        .children
+        .map((tmp) => tmp.key.toString())
+        .toList();
   }
 
   Future<List<String>> getTabsName(String userId) async {
