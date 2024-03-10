@@ -1,5 +1,7 @@
 import 'dart:convert';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -10,17 +12,17 @@ import 'package:smart360/src/screens/home_screen/components/body.dart';
 class PropertyPopup extends StatefulWidget {
   final String userId;
   final String deviceSn;
-  final String propertyValue;
-  final bool itsOn;
+  final PropertyModel propertyModel;
+
   final Function(String) onSave;
 
   const PropertyPopup({
     Key? key,
     required this.userId,
     required this.deviceSn,
-    required this.propertyValue,
+    required this.propertyModel,
     required this.onSave,
-    required this.itsOn,
+    
   }) : super(key: key);
 
   @override
@@ -28,24 +30,22 @@ class PropertyPopup extends StatefulWidget {
 }
 
 class _PropertyPopupState extends State<PropertyPopup> {
-  //String _selectedIcon = 'assets/images/blue.png';
+  final PropertyModel propertyModel=PropertyModel();
+ String _selectedIcon = 'assets/images/blue.png';
   bool itsOn = false;
-  late String propertyName;
-  late String pinNo;
-  late String pinVal;
-  late String place = "";
+
+  late String place="";
+
   late List<String> uri;
   Tema tema = Tema();
-  List<String> components = [];
-
+  List<Map<String,String>> components = [];
+  String dropText="Components Seçiniz";
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   void initState() {
     super.initState();
-
-    itsOn = widget.propertyModel.pinIO=="0"?false:true;
-     fetchComponents();
-
+fetchComponents();
+    itsOn = widget.propertyModel.pinVal=="0"?false:true;
     //_newPropertyValue = widget.propertyValue;
   }
 
@@ -64,29 +64,35 @@ class _PropertyPopupState extends State<PropertyPopup> {
   }
 
   void fetchComponents() async {
-    QuerySnapshot querySnapshot =
-        await FirebaseFirestore.instance.collection('components').get();
-    List<String> fetchedComponents = [];
-    querySnapshot.docs.forEach((doc) {
-      var cName = doc.get('cName');
-      if (cName != null) {
-        fetchedComponents.add(cName.toString());
-      }
-    });
+    // QuerySnapshot querySnapshot =
+    //     await FirebaseFirestore.instance.collection('components').get();
+    // List<String> fetchedComponents = [];
+    // querySnapshot.docs.forEach((doc) {
+    //   var cName = doc.id;
+    //   if (cName != null) {
+    //     fetchedComponents.add(cName.toString());
+    //   }
+
+
+      
+    // });
+
+List<Map<String,String>> tmp = await querry.fetchedComponentsData();
+
     setState(() {
-      components =
-          fetchedComponents; // Alınan ülkeleri state içindeki listeye atıyoruz
+      components =tmp ;
     });
   }
+
+
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
+        borderRadius: BorderRadius.circular(25.0),
       ),
-      backgroundColor: Colors.amber[300],
+      backgroundColor: Colors.amber,
       title: Text(
         "Özellik Ekle  (${widget.deviceSn})",
         textAlign: TextAlign.center,
@@ -95,65 +101,9 @@ class _PropertyPopupState extends State<PropertyPopup> {
       content: SingleChildScrollView(
         child: SizedBox(
           width: MediaQuery.of(context).size.width * 0.5,
-          height: MediaQuery.of(context).size.height * 0.55,
+          height: MediaQuery.of(context).size.height * 0.90,
           child: Form(
             key: _formKey,
-
-      backgroundColor: Colors.blueGrey,
-      title: Text("Özellik Ekle("+widget.deviceSn+")"),
-      content: Column(
-        children: [
-          TextField(
-            controller:TextEditingController(text: widget.propertyModel.propertyName),
-            decoration: InputDecoration(
-              labelText: "Özellik Adı",
-              hintText: widget.propertyModel.propertyName,
-            ),
-            onChanged: (value) {
-              setState(() {
-                 propertyModel.propertyName=value ;
-              });
-            },
-          ),
-          TextField(
-            controller:TextEditingController(text: widget.propertyModel.getPinNo),
-
-            decoration: InputDecoration(
-              labelText: "Pin Numarası",
-              hintText: widget.propertyModel.getPinNo,
-            ),
-            onChanged: (value) {
-              setState(() {
-                propertyModel.pinNo = value;
-              });
-            },
-            
-          ),
-          TextField(
-            controller:TextEditingController(text: widget.propertyModel.getPinVal),
-
-            decoration: InputDecoration(
-              labelText: "Varsayılan Değer",
-              hintText: widget.propertyModel.getPinVal,
-            ),
-            onChanged: (value) {
-              setState(() {
-                propertyModel.pinVal = value;
-              });
-            },
-          ),
-          Container(
-            margin: const EdgeInsets.only(top: 15),
-            padding: const EdgeInsets.all(5),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Colors.black12,
-              border: Border.all(
-                color: const Color.fromRGBO(255, 255, 255, 1),
-                width: 0,
-              ),
-            ),
-
             child: Column(
               children: [
                 Container(
@@ -163,6 +113,7 @@ class _PropertyPopupState extends State<PropertyPopup> {
                   padding: const EdgeInsets.only(
                       left: 10, right: 10, top: 5, bottom: 5),
                   child: TextFormField(
+                    controller: TextEditingController(text: widget.propertyModel.propertyName),
                     validator: (value) {
                       if (value!.isEmpty) {
                         return "bilgileri eksiksiz doldurunuz";
@@ -170,10 +121,10 @@ class _PropertyPopupState extends State<PropertyPopup> {
                       return null;
                     },
                     onSaved: (value) {
-                      propertyName = value!;
+                      propertyModel.propertyName = value!;
                     },
                     decoration:
-                        tema.inputDec("Özellik adı ", Icons.animation_sharp),
+                        tema.inputDec("Özellik adı ", Icons.abc),
                     style: GoogleFonts.quicksand(color: Colors.black),
                   ),
                 ),
@@ -184,18 +135,20 @@ class _PropertyPopupState extends State<PropertyPopup> {
                   padding: const EdgeInsets.only(
                       left: 10, right: 10, top: 5, bottom: 5),
                   child: TextFormField(
+                    controller: TextEditingController(text: widget.propertyModel.pinNo),
+
                     validator: (value) {
                       if (value!.isEmpty) {
                         return "bilgileri eksiksiz doldurunuz";
                       } else {}
                       return null;
                     },
-                    onSaved: (value) {
-                      pinNo = value!;
+                    onSaved: (value) { 
+                     propertyModel.pinNo = value!;
                     },
                     decoration: tema.inputDec(
                       "Pin Numarası",
-                      Icons.animation_rounded,
+                      Icons.cable,
                     ),
                     style: GoogleFonts.quicksand(color: Colors.black),
                   ),
@@ -207,6 +160,7 @@ class _PropertyPopupState extends State<PropertyPopup> {
                   padding: const EdgeInsets.only(
                       left: 10, right: 10, top: 5, bottom: 5),
                   child: TextFormField(
+                    controller: TextEditingController(text: widget.propertyModel.pinVal),
                     validator: (value) {
                       if (value!.isEmpty) {
                         return "bilgileri eksiksiz doldurunuz";
@@ -214,11 +168,11 @@ class _PropertyPopupState extends State<PropertyPopup> {
                       return null;
                     },
                     onSaved: (value) {
-                      pinVal = value!;
+                      propertyModel.pinVal = value!;
                     },
                     decoration: tema.inputDec(
                       "Varsayılan Değer",
-                      Icons.animation_rounded,
+                      Icons.data_array,
                     ),
                     style: GoogleFonts.quicksand(color: Colors.black),
                   ),
@@ -226,8 +180,10 @@ class _PropertyPopupState extends State<PropertyPopup> {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const SizedBox(height: 20),
-                    DropdownButton<String>(
+                    DropdownButton<String>( 
+                      
+                    menuMaxHeight: 150,
+                    alignment: AlignmentDirectional.center,
                       icon: const Icon(Icons.arrow_drop_down,
                           color: Colors.white),
                       elevation: 16,
@@ -238,20 +194,40 @@ class _PropertyPopupState extends State<PropertyPopup> {
                           borderRadius: BorderRadius.circular(15),
                         ),
                       ),
-                      hint: Text('Components Seçiniz'),
+                      hint:   Row( children:[ Icon(Icons.attractions),Text(dropText,)]),
                       value: null,
                       onChanged: (String? newValue) {
+                        
                         // DropdownButton'da değer seçildiğinde yapılacak işlem
+                        
                       },
-                      items: components.map((String country) {
+                      items: 
+                      
+                      
+                      
+                      
+                      
+                      
+                      components.map((obj) {
                         return DropdownMenuItem<String>(
-                          value: country,
-                          child: Text(country),
+                          value: obj["id"],
+                          child: Text(obj["name"].toString()),
+                          onTap: () => {
+                            setState(() {
+                              dropText= obj["name"].toString();
+                            })
+                          },
                         );
                       }).toList(),
+
+
+
+
                     ),
                   ],
                 ),
+              
+              
                 Container(
                   margin: const EdgeInsets.only(top: 15),
                   padding: const EdgeInsets.all(5),
@@ -263,6 +239,8 @@ class _PropertyPopupState extends State<PropertyPopup> {
                       width: 0,
                     ),
                   ),
+
+                  
                   child: Column(
                     children: [
                       Text("İN-OUT Seçim"),
@@ -310,11 +288,75 @@ class _PropertyPopupState extends State<PropertyPopup> {
                     ],
                   ),
                 ),
+
+
+          Divider(),
+          Text("İcon seçin"),
+          GestureDetector(
+            onTap: () async {
+              List<String> icons = await _getlistIcons();
+              // ignore: use_build_context_synchronously
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text('Bir icon seç'),
+                    content: SingleChildScrollView(
+                      child: ListBody(
+                        children: icons.map((icon) {
+                          return Container(
+                              margin: const EdgeInsets.only(bottom: 2),
+                              decoration: BoxDecoration(
+                                  border: Border(bottom: BorderSide(width: 2)),
+                                  borderRadius: BorderRadius.circular(15),
+                                  color: Colors.black12),
+                              child: Column(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        _selectedIcon = icon;
+                                      });
+                                      // Navigator.pushReplacement(this.context,MaterialPageRoute(builder: build));
+                                      Navigator.pop(context);
+                                    },
+                                    child: Image.asset(
+                                      '$icon',
+                                      width: 100,
+                                      height: 100,
+                                    ),
+                                  ),
+                                ],
+                              ));
+                        }).toList(),
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+            child: Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.grey),
+              ),
+              child: Image.asset('$_selectedIcon'),
+            ),
+          ),
+
+
+
               ],
             ),
           ),
         ),
       ),
+     
+
+
+      
       actions: [
         TextButton(
           child: const Text(
@@ -325,16 +367,16 @@ class _PropertyPopupState extends State<PropertyPopup> {
             if (_formKey.currentState!.validate()) {
               _formKey.currentState!.save();
 
-              print("${propertyName},${itsOn},${pinNo},${pinVal}");
+              print("${propertyModel.propertyName},${itsOn},${propertyModel.pinNo},${propertyModel.pinVal}");
               //widget.onSave(_newPropertyValue);
               querry.saveDeviceComp(
                   widget.userId,
                   widget.deviceSn,
                   PropertyModel(
-                      propertyName: propertyName,
+                      propertyName: propertyModel.propertyName,
                       itsOn: itsOn ? "1" : "0",
-                      pinNo: pinNo,
-                      pinIO: pinNo));
+                      pinNo: propertyModel.pinNo,
+                      pinIO: propertyModel.pinNo));
 
               Navigator.pop(context);
             }
