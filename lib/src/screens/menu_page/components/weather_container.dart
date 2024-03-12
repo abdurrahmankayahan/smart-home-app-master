@@ -7,8 +7,8 @@ class WeatherContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<WeatherModel>>(
-      future: WeatherService().getWeatherData(),
-      builder: (context, snapshot) {
+      future:  WeatherService().getWeatherData(),
+      builder: (BuildContext context, AsyncSnapshot<List<WeatherModel>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Text('GUNCELLENIYOR');
         } else if (snapshot.hasError) {
