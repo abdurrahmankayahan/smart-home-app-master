@@ -1,19 +1,37 @@
-import 'package:smart360/config/size_config.dart';
-import 'package:smart360/view/home_screen_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:smart360/config/size_config.dart';
+import 'package:smart360/service/weather_service.dart';
+import 'package:smart360/src/models/weather_model.dart';
 
 class WeatherContainer extends StatelessWidget {
-  const WeatherContainer({Key? key}) : super(key: key);
-
-  
-
   @override
   Widget build(BuildContext context) {
+    return FutureBuilder<List<WeatherModel>>(
+      future:  WeatherService().getWeatherData(),
+      builder: (BuildContext context, AsyncSnapshot<List<WeatherModel>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Text('GUNCELLENIYOR');
+        } else if (snapshot.hasError) {
+          return Text('${snapshot.error}');
+        } else if (snapshot.hasData) {
+          List<WeatherModel> _weathers = snapshot.data!;
+          return _buildWeatherContainer(_weathers);
+        } else {
+          return CircularProgressIndicator();
+        }
+      },
+    );
+  }
+
+  Widget _buildWeatherContainer(List<WeatherModel> _weathers) {
+    if (_weathers.isEmpty) {
+      return Container(); 
+    }
+
     return Stack(
       children: [
         Container(
-          height:
-              getProportionateScreenHeight(120), // Increased container height
+          height: getProportionateScreenHeight(120),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
             color: const Color(0xFFFFFFFF),
@@ -21,8 +39,7 @@ class WeatherContainer extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.symmetric(
               horizontal: getProportionateScreenWidth(10),
-              vertical: getProportionateScreenHeight(
-                  10), // Increased vertical padding
+              vertical: getProportionateScreenHeight(10),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,23 +52,23 @@ class WeatherContainer extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      '15°C',
-                      style: TextStyle(fontSize: 24), // Adjusted text style
+                      '${_weathers[0].durum.toUpperCase()}',
+                      style: TextStyle(fontSize: 14),
                     ),
                     Text(
-                      'Yağmurlu',
-                      style: TextStyle(fontSize: 18), // Adjusted text style
+                      '${_weathers[0].derece.toLowerCase()}°C',
+                      style: TextStyle(fontSize: 14),
                     ),
                     SizedBox(
                       height: getProportionateScreenHeight(5),
                     ),
                     Text(
-                      '28 Aralık 2023',
-                      style: TextStyle(fontSize: 14), // Adjusted text style
+                      '${_weathers[0].gun.toUpperCase()}',
+                      style: TextStyle(fontSize: 14),
                     ),
                     Text(
-                      'Turkiye, Trabzon',
-                      style: TextStyle(fontSize: 14), // Adjusted text style
+                      'Nem: ${_weathers[0].nem.toLowerCase()}',
+                      style: TextStyle(fontSize: 14),
                     )
                   ],
                 ),
@@ -59,8 +76,8 @@ class WeatherContainer extends StatelessWidget {
             ),
           ),
         ),
-        Image.asset(
-          'assets/images/weather/0.png',
+        Image.network(
+          _weathers[0].ikon,
           height: getProportionateScreenHeight(110),
           width: getProportionateScreenWidth(140),
           fit: BoxFit.contain,
