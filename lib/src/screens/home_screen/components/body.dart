@@ -72,8 +72,6 @@ class Body extends StatelessWidget {
                                 },
                               );
                             },
-                            iconAsset:
-                                'assets/icons/device_icons/thermostat.svg',
 
                             switchButton: () {
                               e.getUpdateFunc();

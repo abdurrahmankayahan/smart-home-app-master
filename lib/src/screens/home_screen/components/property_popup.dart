@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -36,14 +37,17 @@ class _PropertyPopupState extends State<PropertyPopup> {
   late String propertyIcon;
   late String place = "";
   bool itsOn = false;
-  String dropText = "Components Seçiniz";
+  String dropText =  "Components Seçiniz";
 
   @override
   void initState() {
     super.initState();
     fetchComponents();
     itsOn = widget.propertyModel.pinVal == "0" ? false : true;
+    dropText=widget.propertyModel.componentId!;
+    // TODO :??? component id si  alınan veriye karsılık düşen component adını yazdır....  overload  yontemi  kullanılabilir querry de  çağırlıan isimi  parametreli yap 
     propertyIcon = widget.propertyModel.propertyIcon!;
+    propertyModel.propertyIcon=widget.propertyModel.propertyIcon!;
     //_newPropertyValue = widget.propertyValue;
   }
 
@@ -196,10 +200,14 @@ class _PropertyPopupState extends State<PropertyPopup> {
                         ),
                       ),
                       hint: Row(children: [
-                        const Icon(Icons.attractions),
-                        Text(
+                         const Icon(Icons.attractions),
+                        Container(width: MediaQuery.maybeOf(context)!.size.width*0.4, 
+                        child:  Text(
+                          overflow: TextOverflow.ellipsis,
                           dropText,
-                        )
+                        ), ),
+                       
+                    
                       ]),
                       value: null,
                       onChanged: (String? newValue) {
@@ -212,6 +220,7 @@ class _PropertyPopupState extends State<PropertyPopup> {
                           onTap: () => {
                             setState(() {
                               dropText = obj["name"].toString();
+                              propertyModel.componentId=obj["id"];
                             })
                           },
                         );
@@ -319,6 +328,7 @@ class _PropertyPopupState extends State<PropertyPopup> {
                                         onTap: () {
                                           setState(() {
                                             propertyIcon = icon;
+                                            propertyModel.propertyIcon=icon;
                                           });
                                           Navigator.pop(context);
                                         },
@@ -372,9 +382,11 @@ class _PropertyPopupState extends State<PropertyPopup> {
                   widget.deviceSn,
                   PropertyModel(
                       propertyName: propertyModel.propertyName,
+                      componentId: propertyModel.componentId,
                       itsOn: itsOn ? "1" : "0",
                       pinNo: propertyModel.pinNo,
                       pinIO: propertyModel.pinNo,
+                      pinVal: propertyModel.pinVal,
                       propertyIcon: propertyModel.getPropertyIcon));
 
               Navigator.pop(context);

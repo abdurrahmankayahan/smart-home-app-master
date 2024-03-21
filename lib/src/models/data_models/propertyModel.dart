@@ -7,6 +7,8 @@ class PropertyModel {
   String? pinVal = "";
   String? itsOn = "";
   String? propertyIcon = "";
+  String? componentId="";
+
 
   Function({String? val})? updateFunc;
 
@@ -19,6 +21,7 @@ class PropertyModel {
     this.pinVal = "",
     this.itsOn = "",
     this.propertyIcon = "",
+    this.componentId="",
     this.updateValue,
     this.updateFunc,
   });
@@ -56,4 +59,8 @@ class PropertyModel {
   String? get getPropertyIcon => this.propertyIcon;
 
   set setPropertyIcon(String? propertyIcon) => this.propertyIcon = propertyIcon;
+  
+  String? get getComponentId => this.componentId;
+
+ set setComponentId(String? componentId) => this.componentId = componentId;
 }
