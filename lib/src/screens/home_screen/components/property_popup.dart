@@ -1,9 +1,8 @@
 import 'dart:convert';
 
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smart360/src/models/data_models/propertyModel.dart';
 import 'package:smart360/src/models/theme.dart';
@@ -22,7 +21,6 @@ class PropertyPopup extends StatefulWidget {
     required this.deviceSn,
     required this.propertyModel,
     required this.onSave,
-    
   }) : super(key: key);
 
   @override
@@ -30,22 +28,22 @@ class PropertyPopup extends StatefulWidget {
 }
 
 class _PropertyPopupState extends State<PropertyPopup> {
-  final PropertyModel propertyModel=PropertyModel();
- String _selectedIcon = 'assets/images/blue.png';
-  bool itsOn = false;
-
-  late String place="";
-
-  late List<String> uri;
-  Tema tema = Tema();
-  List<Map<String,String>> components = [];
-  String dropText="Components Seçiniz";
+  final PropertyModel propertyModel = PropertyModel();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  List<Map<String, String>> components = [];
+  Tema tema = Tema();
+  late List<String> uri;
+  late String propertyIcon;
+  late String place = "";
+  bool itsOn = false;
+  String dropText = "Components Seçiniz";
+
   @override
   void initState() {
     super.initState();
-fetchComponents();
-    itsOn = widget.propertyModel.pinVal=="0"?false:true;
+    fetchComponents();
+    itsOn = widget.propertyModel.pinVal == "0" ? false : true;
+    propertyIcon = widget.propertyModel.propertyIcon!;
     //_newPropertyValue = widget.propertyValue;
   }
 
@@ -55,12 +53,19 @@ fetchComponents();
     final Map<String, dynamic> manifestMap = json.decode(manifestContent);
     // >> To get paths you need these 2 lines
 
-    final imagePaths = manifestMap.keys
-        .where((String key) => key.contains('images/'))
-        .where((String key) => key.contains('.png'))
+    final svgPaths = manifestMap.keys
+        .where((String key) => key.contains('icons/device_icons/'))
+        .where((String key) => key.contains('.svg'))
         .toList();
 
-    return imagePaths;
+    return svgPaths;
+
+    // final imagePaths = manifestMap.keys
+    //     .where((String key) => key.contains('images/'))
+    //     .where((String key) => key.contains('.png'))
+    //     .toList();
+
+    // return imagePaths;
   }
 
   void fetchComponents() async {
@@ -73,18 +78,14 @@ fetchComponents();
     //     fetchedComponents.add(cName.toString());
     //   }
 
-
-      
     // });
 
-List<Map<String,String>> tmp = await querry.fetchedComponentsData();
+    List<Map<String, String>> tmp = await querry.fetchedComponentsData();
 
     setState(() {
-      components =tmp ;
+      components = tmp;
     });
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +114,8 @@ List<Map<String,String>> tmp = await querry.fetchedComponentsData();
                   padding: const EdgeInsets.only(
                       left: 10, right: 10, top: 5, bottom: 5),
                   child: TextFormField(
-                    controller: TextEditingController(text: widget.propertyModel.propertyName),
+                    controller: TextEditingController(
+                        text: widget.propertyModel.propertyName),
                     validator: (value) {
                       if (value!.isEmpty) {
                         return "bilgileri eksiksiz doldurunuz";
@@ -123,8 +125,7 @@ List<Map<String,String>> tmp = await querry.fetchedComponentsData();
                     onSaved: (value) {
                       propertyModel.propertyName = value!;
                     },
-                    decoration:
-                        tema.inputDec("Özellik adı ", Icons.abc),
+                    decoration: tema.inputDec("Özellik adı ", Icons.abc),
                     style: GoogleFonts.quicksand(color: Colors.black),
                   ),
                 ),
@@ -135,16 +136,16 @@ List<Map<String,String>> tmp = await querry.fetchedComponentsData();
                   padding: const EdgeInsets.only(
                       left: 10, right: 10, top: 5, bottom: 5),
                   child: TextFormField(
-                    controller: TextEditingController(text: widget.propertyModel.pinNo),
-
+                    controller:
+                        TextEditingController(text: widget.propertyModel.pinNo),
                     validator: (value) {
                       if (value!.isEmpty) {
                         return "bilgileri eksiksiz doldurunuz";
                       } else {}
                       return null;
                     },
-                    onSaved: (value) { 
-                     propertyModel.pinNo = value!;
+                    onSaved: (value) {
+                      propertyModel.pinNo = value!;
                     },
                     decoration: tema.inputDec(
                       "Pin Numarası",
@@ -160,7 +161,8 @@ List<Map<String,String>> tmp = await querry.fetchedComponentsData();
                   padding: const EdgeInsets.only(
                       left: 10, right: 10, top: 5, bottom: 5),
                   child: TextFormField(
-                    controller: TextEditingController(text: widget.propertyModel.pinVal),
+                    controller: TextEditingController(
+                        text: widget.propertyModel.pinVal),
                     validator: (value) {
                       if (value!.isEmpty) {
                         return "bilgileri eksiksiz doldurunuz";
@@ -180,10 +182,9 @@ List<Map<String,String>> tmp = await querry.fetchedComponentsData();
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    DropdownButton<String>( 
-                      
-                    menuMaxHeight: 150,
-                    alignment: AlignmentDirectional.center,
+                    DropdownButton<String>(
+                      menuMaxHeight: 150,
+                      alignment: AlignmentDirectional.center,
                       icon: const Icon(Icons.arrow_drop_down,
                           color: Colors.white),
                       elevation: 16,
@@ -194,40 +195,30 @@ List<Map<String,String>> tmp = await querry.fetchedComponentsData();
                           borderRadius: BorderRadius.circular(15),
                         ),
                       ),
-                      hint:   Row( children:[ Icon(Icons.attractions),Text(dropText,)]),
+                      hint: Row(children: [
+                        const Icon(Icons.attractions),
+                        Text(
+                          dropText,
+                        )
+                      ]),
                       value: null,
                       onChanged: (String? newValue) {
-                        
                         // DropdownButton'da değer seçildiğinde yapılacak işlem
-                        
                       },
-                      items: 
-                      
-                      
-                      
-                      
-                      
-                      
-                      components.map((obj) {
+                      items: components.map((obj) {
                         return DropdownMenuItem<String>(
                           value: obj["id"],
                           child: Text(obj["name"].toString()),
                           onTap: () => {
                             setState(() {
-                              dropText= obj["name"].toString();
+                              dropText = obj["name"].toString();
                             })
                           },
                         );
                       }).toList(),
-
-
-
-
                     ),
                   ],
                 ),
-              
-              
                 Container(
                   margin: const EdgeInsets.only(top: 15),
                   padding: const EdgeInsets.all(5),
@@ -239,11 +230,9 @@ List<Map<String,String>> tmp = await querry.fetchedComponentsData();
                       width: 0,
                     ),
                   ),
-
-                  
                   child: Column(
                     children: [
-                      Text("İN-OUT Seçim"),
+                      const Text("İN-OUT Seçim"),
                       Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -261,7 +250,7 @@ List<Map<String,String>> tmp = await querry.fetchedComponentsData();
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(20),
                                   color: itsOn
-                                      ? Color.fromARGB(255, 239, 184, 73)
+                                      ? const Color.fromARGB(255, 239, 184, 73)
                                       : const Color(0xFF808080),
                                   border: Border.all(
                                     color:
@@ -288,75 +277,83 @@ List<Map<String,String>> tmp = await querry.fetchedComponentsData();
                     ],
                   ),
                 ),
+                const Divider(),
+                const Text(
+                  "İkon Seçiniz:",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 19),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                GestureDetector(
+                  onTap: () async {
+                    List<String> icons = await _getlistIcons();
+                    // ignore: use_build_context_synchronously
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text(
+                            "İkon Seçiniz:",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 19),
+                          ),
 
-
-          Divider(),
-          Text("İcon seçin"),
-          GestureDetector(
-            onTap: () async {
-              List<String> icons = await _getlistIcons();
-              // ignore: use_build_context_synchronously
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text('Bir icon seç'),
-                    content: SingleChildScrollView(
-                      child: ListBody(
-                        children: icons.map((icon) {
-                          return Container(
-                              margin: const EdgeInsets.only(bottom: 2),
-                              decoration: BoxDecoration(
-                                  border: Border(bottom: BorderSide(width: 2)),
-                                  borderRadius: BorderRadius.circular(15),
-                                  color: Colors.black12),
+                          //backgroundColor: Colors.amber,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          content: SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.25,
+                            width: MediaQuery.of(context).size.width * 0.3,
+                            child: SingleChildScrollView(
                               child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        _selectedIcon = icon;
-                                      });
-                                      // Navigator.pushReplacement(this.context,MaterialPageRoute(builder: build));
-                                      Navigator.pop(context);
-                                    },
-                                    child: Image.asset(
-                                      '$icon',
-                                      width: 100,
-                                      height: 100,
-                                    ),
+                                  Wrap(
+                                    spacing: 8.0,
+                                    runSpacing: 8.0,
+                                    children: icons.map((icon) {
+                                      return GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            propertyIcon = icon;
+                                          });
+                                          Navigator.pop(context);
+                                        },
+                                        child: SvgPicture.asset(
+                                          icon,
+                                          width: 50,
+                                          height: 50,
+                                        ),
+                                      );
+                                    }).toList(),
                                   ),
                                 ],
-                              ));
-                        }).toList(),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  child: Container(
+                      width: 100,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.grey),
                       ),
-                    ),
-                  );
-                },
-              );
-            },
-            child: Container(
-              width: 100,
-              height: 100,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: Colors.grey),
-              ),
-              child: Image.asset('$_selectedIcon'),
-            ),
-          ),
-
-
-
+                      child: propertyIcon == ""
+                          ? SvgPicture.asset("assets/icons/svg/info.svg")
+                          : SvgPicture.asset(propertyIcon)),
+                ),
               ],
             ),
           ),
         ),
       ),
-     
-
-
-      
       actions: [
         TextButton(
           child: const Text(
@@ -367,7 +364,8 @@ List<Map<String,String>> tmp = await querry.fetchedComponentsData();
             if (_formKey.currentState!.validate()) {
               _formKey.currentState!.save();
 
-              print("${propertyModel.propertyName},${itsOn},${propertyModel.pinNo},${propertyModel.pinVal}");
+              print(
+                  "${propertyModel.propertyName},${itsOn},${propertyModel.pinNo},${propertyModel.pinVal}");
               //widget.onSave(_newPropertyValue);
               querry.saveDeviceComp(
                   widget.userId,
@@ -376,7 +374,8 @@ List<Map<String,String>> tmp = await querry.fetchedComponentsData();
                       propertyName: propertyModel.propertyName,
                       itsOn: itsOn ? "1" : "0",
                       pinNo: propertyModel.pinNo,
-                      pinIO: propertyModel.pinNo));
+                      pinIO: propertyModel.pinNo,
+                      propertyIcon: propertyModel.getPropertyIcon));
 
               Navigator.pop(context);
             }
