@@ -150,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             );
                           } else {
-                            return Expanded  (child: Center (child:CircularProgressIndicator(color: Colors.amber)));
+                            return Expanded  (child: Center (child: LinearProgressIndicator(color: Colors.amber)));
                           }
                         },
                       ),

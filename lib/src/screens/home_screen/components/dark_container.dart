@@ -23,12 +23,11 @@ class DarkContainer extends StatelessWidget {
   final VoidCallback switchFav;
   final bool isFav;
 
-  final String iconAsset;
+
   const DarkContainer({
     Key? key,
     required this.propertyModel,
     required this.onTap,
-    required this.iconAsset,
     required this.switchButton,
     required this.isFav,
     required this.switchFav,
@@ -79,7 +78,7 @@ class DarkContainer extends StatelessWidget {
                           const BorderRadius.all(Radius.elliptical(45, 45)),
                     ),
                     child: SvgPicture.asset(
-                      iconAsset,
+                      propertyModel.propertyIcon==""?"assets/icons/svg/info.svg":propertyModel.propertyIcon!,
                       color: propertyModel.getItsOn != null &&
                               propertyModel.getPinVal == "1"
                           ? Colors.amber

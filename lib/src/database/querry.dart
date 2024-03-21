@@ -97,6 +97,8 @@ class QuerryClass {
         .children
         .map((tmp) => PropertyModel(
               propertyName: tmp.key.toString(),
+              componentId: tmp.child("componentId").value.toString(),
+              propertyIcon: tmp.child("iconAsset").value.toString(),
               pinNo: tmp.child("pinNumber").value.toString(),
               pinIO: tmp.child("pinIOStatus").value.toString(),
               pinVal: tmp.child("value").value.toString(),
@@ -120,6 +122,8 @@ class QuerryClass {
         .child("components")
         .update({
       pm.propertyName!: {
+        "componentId":pm.componentId!,
+        "iconAsset":pm.propertyIcon!,
         "pinIOStatus": pm.pinIO!,
         "pinNumber": pm.pinNo!,
         "value": pm.pinVal!,
