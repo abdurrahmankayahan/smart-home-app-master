@@ -67,11 +67,13 @@ class Body extends StatelessWidget {
                                     onSave: (newValue) {
                                       // Handle property save
                                     },
+                                    //directoryPath: '/assets/icons/device_icons',
                                   );
                                 },
                               );
                             },
-                            iconAsset: "assets/icons/menu_icons/devices.svg",
+                            iconAsset:
+                                'assets/icons/device_icons/thermostat.svg',
 
                             switchButton: () {
                               e.getUpdateFunc();
@@ -179,6 +181,7 @@ class Body extends StatelessWidget {
                 onSave: (newValue) {
                   // Handle property save
                 },
+                //directoryPath: '/assets/icons',
               );
             },
           );
@@ -200,4 +203,3 @@ class Body extends StatelessWidget {
     );
   }
 }
-
