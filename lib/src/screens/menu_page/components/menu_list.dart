@@ -20,10 +20,9 @@ class _MenuListState extends State<MenuList> {
   AuthService authService = AuthService();
   @override
   Widget build(BuildContext context) {
-    
     return Column(
       children: [
-   WeatherContainer(),
+        WeatherContainer(),
         //MenuListItem is custom tile in list_tile file
         MenuListItems(
           iconPath: 'assets/icons/menu_icons/stats.svg',
@@ -44,21 +43,21 @@ class _MenuListState extends State<MenuList> {
             Navigator.of(context).pushNamed(SavingsScreen.routeName);
           },
         ),
-       MenuListItems(
-            iconPath: 'assets/icons/menu_icons/settings.svg',
-            itemName: 'Ayarlar',
-            function: () {},
-          ),
-        
-     
         MenuListItems(
-            iconPath: 'assets/icons/menu_icons/notifications.svg',
-            itemName: 'Bildirimler',
-            function: () {},
-          ),
+          iconPath: 'assets/icons/menu_icons/settings.svg',
+          itemName: 'Ayarlar',
+          function: () {},
+        ),
+
+        MenuListItems(
+          iconPath: 'assets/icons/menu_icons/notifications.svg',
+          itemName: 'Bildirimler',
+          function: () {},
+        ),
         Divider(),
-        Center(child:  ListTile(
-        contentPadding: EdgeInsets.all(5),
+        Center(
+            child: ListTile(
+          contentPadding: EdgeInsets.all(5),
           onTap: () async {
             showDialog(
                 barrierDismissible: false,
@@ -95,23 +94,21 @@ class _MenuListState extends State<MenuList> {
                   );
                 });
           },
-      
-          leading: const Icon( color:Colors.red,
+          leading: const Icon(
+            color: Colors.red,
             Icons.exit_to_app_rounded,
             size: 50,
           ),
           title: const Text(
             "Çıkış Yap",
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 24,
+              //fontFamily: 'Lexend',
               fontWeight: FontWeight.bold,
             ),
           ),
-        )
-     ),
-       
-       
-        ],
+        )),
+      ],
     );
   }
 }
