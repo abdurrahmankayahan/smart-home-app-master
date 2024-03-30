@@ -1,56 +1,60 @@
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart360/firebase_options.dart';
 import 'package:smart360/helper/helper_function.dart';
 import 'package:smart360/provider/getit.dart';
 import 'package:smart360/routes/routes.dart';
 import 'package:smart360/src/models/data_models/userModel.dart';
-import 'package:smart360/src/screens/home_screen/home_screen.dart';
-import 'package:smart360/src/screens/splash_screen/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:smart360/src/screens/home_screen/home_screen.dart';
+import 'package:smart360/view/onboarding/onboarding_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final prefs = await SharedPreferences.getInstance();
+  final onboarding = prefs.getBool("onboarding") ?? false;
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   setupLocator();
-  runApp(const MyApp());
+  runApp(MyApp(onboarding: onboarding));
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final bool onboarding;
+  const MyApp({Key? key, required this.onboarding}) : super(key: key);
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  State<MyApp> createState() => _MyAppState(onboarding: onboarding);
 }
 
 class _MyAppState extends State<MyApp> {
-  bool isLogged=false;
+  final bool onboarding;
+  bool isLogged = false;
 
-   @override
+  _MyAppState({required this.onboarding});
+
+  @override
   void initState() {
     super.initState();
     gettingUserData();
   }
-late UserModel user;
+
+  late UserModel user;
   gettingUserData() async {
-    HelperFunctions hlp=HelperFunctions();
+    HelperFunctions hlp = HelperFunctions();
     hlp.initSP();
-user=await hlp.getUserModel() as UserModel;
-  
+    user = await hlp.getUserModel() as UserModel;
+
     setState(() {
-    isLogged=user.getIsLogged!;
+      isLogged = user.getIsLogged!;
     });
   }
-  
 
-  
   final ThemeMode themeMode = ThemeMode.system;
 
   @override
   Widget build(BuildContext context) {
-   
-   
     return MaterialApp(
       title: 'smart360',
       debugShowCheckedModeBanner: false,
@@ -115,8 +119,8 @@ user=await hlp.getUserModel() as UserModel;
         ),
       ),
       routes: routes,
-      home: isLogged==true?HomeScreen():SplashScreen(),
+      //home: isLogged==true?HomeScreen():SplashScreen(),
+      home: onboarding ? HomeScreen() : OnboardingView(),
     );
-  
   }
 }

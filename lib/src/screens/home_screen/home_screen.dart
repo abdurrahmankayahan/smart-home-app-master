@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart360/config/size_config.dart';
 import 'package:smart360/helper/helper_function.dart';
 import 'package:smart360/provider/base_view.dart';
@@ -79,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Text(
                           "${username}",
                           style: Theme.of(context).textTheme.displayLarge,
-                             overflow: TextOverflow.ellipsis,
+                          overflow: TextOverflow.ellipsis,
                           maxLines: 2,
                         ),
                       ),
@@ -98,7 +99,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: Colors.black,
                           ),
                           onPressed: () {
-                            // Navigator.of(context).pushNamed(EditProfile.routeName);
+                            Navigator.of(context)
+                                .pushNamed(EditProfile.routeName);
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -150,19 +152,25 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             );
                           } else {
-                            return Expanded  (child: Center (child: LinearProgressIndicator(color: Colors.amber)));
+                            return Expanded(
+                                child: Center(
+                                    child: LinearProgressIndicator(
+                                        color: Colors.amber)));
                           }
                         },
                       ),
                       IconButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      //addEnvironmentScreen(userId:userId),
-                                      ManageEnvScreen(),
-                                ));
+                          onPressed: () async {
+                            // Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //       builder: (context) =>
+                            //           //addEnvironmentScreen(userId:userId),
+                            //           ManageEnvScreen(),
+                            //     ));
+                            final prefs = await SharedPreferences.getInstance();
+                            prefs.setBool("onboarding", false);
+                            print("onb flse");
                           },
                           icon: Icon(Icons.add_home_work_rounded))
                     ],
@@ -187,7 +195,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                     ).toList());
                   } else {
-                    return  Center (child:CircularProgressIndicator(color: Colors.amber,));
+                    return Center(
+                        child: CircularProgressIndicator(
+                      color: Colors.amber,
+                    ));
                   }
                 },
               ),
