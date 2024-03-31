@@ -4,47 +4,34 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart360/src/models/data_models/userModel.dart';
 
-class HelperFunctions  {
-  //keys
-
+class HelperFunctions {
   static String userInfo = "USERINFO";
   static late SharedPreferences sp;
 
-   initSP()async{
-   sp= await SharedPreferences.getInstance();
+  static Future<void> initSP() async {
+    sp = await SharedPreferences.getInstance();
+  }
 
- }
-
-HelperFunctions(){
-  initSP();
-}
- 
-
- Future<bool> setUserInfo(UserModel userModel) async {
+  static Future<bool> setUserInfo(UserModel userModel) async {
     await initSP();
-    return await sp.setString(userInfo, userModel.getJsonUserInfo.toString());
+    return await sp.setString(userInfo, json.encode(userModel.toJson()));
   }
- Future<String?> getUserInfo() async {
-    
-    return await sp.getString(userInfo);
+
+  static Future<String?> getUserInfo() async {
+    return sp.getString(userInfo);
   }
- Future<UserModel?> getUserModel() async {
-  await initSP();
-    String jsonString= await sp.getString(userInfo)! ;
-     final jsonMap = json.decode(jsonString) as Map<String, dynamic>;
-    return UserModel.fromJson(jsonMap);
-    
+
+  static Future<UserModel?> getUserModel() async {
+    await initSP();
+    String? jsonString = sp.getString(userInfo);
+    if (jsonString != null) {
+      final jsonMap = json.decode(jsonString) as Map<String, dynamic>;
+      return UserModel.fromJson(jsonMap);
+    } else {
+      print("nulll deger donduuuuuuuuuuuuuuuuu");
+      return null;
+    }
   }
-  
- 
-
-
-
-
-
-
-
-
 
 //   // saving the data to SF
 // static Future<bool> initSF(bool isUserLoggedIn) async {

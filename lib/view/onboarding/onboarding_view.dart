@@ -93,12 +93,16 @@ class _OnboardingViewState extends State<OnboardingView> {
               pres.setBool("onboarding", true);
               print("onb true");
               if (!mounted) return;
+
               //if (!mounted) kontrolü, widget'ın hala kullanıcı arayüzünde olup olmadığını kontrol ederek hataları önler
               //Navigator.pushReplacement(context, MaterialPageRoute(builder: ))
+
+              bool onboarding = pres.getBool("onboarding") ?? true;
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const HomeScreen(),
+                    builder: (context) =>
+                        onboarding ? HomeScreen() : OnboardingView(),
                   ));
             },
             child: const Text(

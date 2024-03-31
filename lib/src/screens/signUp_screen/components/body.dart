@@ -4,6 +4,7 @@
 // import 'package:enelsis_app/service/auth_service.dart';
 // import 'package:enelsis_app/widgets/widgets.dart';
 
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart360/helper/helper_function.dart';
 import 'package:smart360/service/auth_service.dart';
 import 'package:smart360/src/database/querry.dart';
@@ -223,14 +224,18 @@ class _BodyState extends State<Body> {
             // saving the shared preference state
 
             HelperFunctions hlp = HelperFunctions();
-            hlp.initSP();
+            HelperFunctions.initSP();
 
-            hlp.setUserInfo(
+            HelperFunctions.setUserInfo(
                 UserModel(userName: name, userEmail: email, isLogged: true));
 
             // await HelperFunctions.saveUserLoggedInStatus(true);
             // await HelperFunctions.saveUserEmailSF(email);
             // await HelperFunctions.saveUserNameSF(name);
+
+            final prefs = await SharedPreferences.getInstance();
+            prefs.setBool("onboarding", false);
+            print("onb flse");
 
             Navigator.of(context).pushNamed(HomeScreen.routeName);
             formkey.currentState!.reset();

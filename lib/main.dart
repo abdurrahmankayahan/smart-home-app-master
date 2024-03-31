@@ -7,6 +7,7 @@ import 'package:smart360/src/models/data_models/userModel.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:smart360/src/screens/home_screen/home_screen.dart';
+import 'package:smart360/src/screens/splash_screen/splash_screen.dart';
 import 'package:smart360/view/onboarding/onboarding_view.dart';
 
 void main() async {
@@ -43,8 +44,8 @@ class _MyAppState extends State<MyApp> {
   late UserModel user;
   gettingUserData() async {
     HelperFunctions hlp = HelperFunctions();
-    hlp.initSP();
-    user = await hlp.getUserModel() as UserModel;
+    HelperFunctions.initSP();
+    user = await HelperFunctions.getUserModel() as UserModel;
 
     setState(() {
       isLogged = user.getIsLogged!;
@@ -119,8 +120,11 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
       routes: routes,
-      //home: isLogged==true?HomeScreen():SplashScreen(),
-      home: onboarding ? HomeScreen() : OnboardingView(),
+      //home: isLogged == true ? HomeScreen() : SplashScreen(),
+      //home: onboarding ? HomeScreen() : OnboardingView(),
+      home: isLogged
+          ? (onboarding ? HomeScreen() : OnboardingView())
+          : SplashScreen(),
     );
   }
 }

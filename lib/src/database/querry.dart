@@ -4,6 +4,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart360/helper/helper_function.dart';
 import 'package:smart360/src/models/data_models/propertyModel.dart';
 import 'package:smart360/src/models/data_models/userModel.dart';
@@ -50,7 +51,7 @@ class QuerryClass {
 
         HelperFunctions hlp = HelperFunctions();
 
-        hlp.setUserInfo(user);
+        HelperFunctions.setUserInfo(user);
 
         print(uuid);
         print(name);
@@ -60,6 +61,9 @@ class QuerryClass {
 
           print(name);
           print(email);
+          final pres = await SharedPreferences.getInstance();
+          pres.setBool("onboarding", false);
+          print("onb false");
           Navigator.of(context).pushNamed(HomeScreen.routeName);
         } catch (e) {
           showSnackbar(context, Colors.red, e.toString());
@@ -122,8 +126,8 @@ class QuerryClass {
         .child("components")
         .update({
       pm.propertyName!: {
-        "componentId":pm.componentId!,
-        "iconAsset":pm.propertyIcon!,
+        "componentId": pm.componentId!,
+        "iconAsset": pm.propertyIcon!,
         "pinIOStatus": pm.pinIO!,
         "pinNumber": pm.pinNo!,
         "value": pm.pinVal!,
@@ -139,55 +143,52 @@ class QuerryClass {
       'name': um.userName,
     });
   }
+
   Future<DataSnapshot> fetchData(String userId) async {
     DataSnapshot snapshot = await databaseReference.child('$userId').get();
 
     if (snapshot.exists) {
       // Child varsa, verisini alın ve kullanın
+      final pres = await SharedPreferences.getInstance();
+      pres.setBool("onboarding", true);
       return snapshot;
       // Veri işleme kodunu buraya ekleyin
     } else {
       // Child yoksa, userId numarasını kaydedin
-      await databaseReference.child('$userId').child("devices").set({
-        '34434232': {
-          'components': {
-            'isik': {'pinIOStatus': 1, 'pinNumber': 2, 'value': 0}
-          },
-          'config': {'place': "conf", 'title': "Akıllı Sistemler"}
-        }
-      });
-      snapshot = await databaseReference.child('$userId').get();
+      // await databaseReference.child('$userId').child("devices").set({
+      //   '34434232': {
+      //     'components': {
+      //       'isik': {'pinIOStatus': 1, 'pinNumber': 2, 'value': 0}
+      //     },
+      //     'config': {'place': "conf", 'title': "Akıllı Sistemler"}
+      //   }
+      // });
+      // snapshot = await databaseReference.child('$userId').get();
+      final pres = await SharedPreferences.getInstance();
+      pres.setBool("onboarding", false);
     }
 
     return snapshot;
   }
-    
 
-  Future<List<Map<String,String>>>  fetchedComponentsData()async{
-
-
-///  HATA:   sadece  name  geliyor... 
-   QuerySnapshot querySnapshot =
+  Future<List<Map<String, String>>> fetchedComponentsData() async {
+    ///  HATA:   sadece  name  geliyor...
+    QuerySnapshot querySnapshot =
         await FirebaseFirestore.instance.collection('components').get();
-  return  querySnapshot.docs.map((e) =>
-    {"id":e.id,  "name":e.get("cName").toString()} as  Map<String,String > 
-  ).toList();
-
+    return querySnapshot.docs
+        .map((e) => {"id": e.id, "name": e.get("cName").toString()}
+            as Map<String, String>)
+        .toList();
   }
-
-   
-
-
 
   Future<List<String>> getTabsBody(String userId) async {
     var data = await fetchData(userId);
 
-   return data
+    return data
         .child("devices")
         .children
         .map((tmp) => tmp.key.toString())
         .toList();
-
   }
 
   Future<List<String>> getTabsName(String userId) async {
@@ -199,9 +200,4 @@ class QuerryClass {
         .map((tmp) => tmp.child("config").child("title").value.toString())
         .toList();
   }
-
-
 }
-
-
-

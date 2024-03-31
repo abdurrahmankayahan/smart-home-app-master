@@ -27,7 +27,7 @@ class HomeScreen extends StatefulHookWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late String email, username, userId;
+  String? email, username, userId;
 
   @override
   void initState() {
@@ -38,13 +38,15 @@ class _HomeScreenState extends State<HomeScreen> {
   late UserModel user;
   gettingUserData() async {
     HelperFunctions hlp = HelperFunctions();
-    hlp.initSP();
-    UserModel user = await hlp.getUserModel() as UserModel;
+    await HelperFunctions.initSP();
+    UserModel user = await HelperFunctions.getUserModel() as UserModel;
 
     setState(() {
       email = user.userEmail!;
       username = user.userName!;
       userId = user.userId!;
+
+      //userId = user.userId!;
     });
   }
 
@@ -54,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
 //         .get();
 
     //  var s=await fetchData(userId);
-    var s = await querry.fetchData(userId);
+    //var s = await querry.fetchData(userId);
 
     return BaseView<HomeScreenViewModel>(
         onModelReady: (model) => {
@@ -121,10 +123,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Row(
                     children: [
                       FutureBuilder(
-                        future: querry.getTabsName(userId),
+                        future: querry.getTabsName(userId!),
                         builder: (BuildContext context,
                             AsyncSnapshot<List<String>> snapshot) {
-                          if (snapshot.hasData) {
+                          if (snapshot.hasData && snapshot.data!.isNotEmpty) {
                             return Expanded(
                               child: TabBar(
                                 dividerColor: Colors.amber,
@@ -152,10 +154,11 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             );
                           } else {
-                            return Expanded(
-                                child: Center(
-                                    child: LinearProgressIndicator(
-                                        color: Colors.amber)));
+                            return Container();
+                            // return Expanded(
+                            //     child: Center(
+                            //         child: LinearProgressIndicator(
+                            //             color: Colors.amber)));
                           }
                         },
                       ),
@@ -180,7 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
               drawer: SizedBox(
                   width: getProportionateScreenWidth(270), child: const Menu()),
               body: FutureBuilder(
-                future: querry.getTabsBody(userId),
+                future: querry.getTabsBody(userId!),
                 builder: (BuildContext context,
                     AsyncSnapshot<List<String>> snapshot) {
                   if (snapshot.hasData) {
@@ -189,7 +192,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       (e) {
                         return (Body(
                           model: model,
-                          uid: userId,
+                          uid: userId!,
                           sn: e,
                         ));
                       },
@@ -224,7 +227,7 @@ class _HomeScreenState extends State<HomeScreen> {
     SizeConfig().init(context);
 
     useEffect(() {
-      if (userId.isEmpty) {
+      if (userId!.isEmpty) {
         return () {
           Center(child: CircularProgressIndicator());
         };
