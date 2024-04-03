@@ -4,17 +4,19 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:smart360/src/database/querry.dart';
 
-QuerryClass querry=QuerryClass();
+QuerryClass querry = QuerryClass();
+
 class addEnvironmentScreen extends StatefulHookWidget {
   static String routeName = '/addEnvironmentScreen';
   final String? userId;
   @override
   State<addEnvironmentScreen> createState() => _BodyState();
 
-  const addEnvironmentScreen({super.key , this.userId});
+  const addEnvironmentScreen({super.key, this.userId});
 }
+
 class _BodyState extends State<addEnvironmentScreen> {
-    final List<String> environments = const [
+  final List<String> environments = const [
     'Çocuk odası',
     'Oturma odası',
     'Çalışma odası',
@@ -24,26 +26,24 @@ class _BodyState extends State<addEnvironmentScreen> {
     'Mutfak',
     'Banyo',
   ];
-     List<String> environmentsAvailable =[];
+  List<String> environmentsAvailable = [];
 
   @override
   void initState() {
     getListName(widget.userId!);
     super.initState();
-
   }
 
-getListName(String userId)async{
-  List<String> tmps=await querry.getTabsName(userId);
+  getListName(String userId) async {
+    List<String> tmps = await querry.getTabsName(userId);
 
-  setState(() {
-      environmentsAvailable=tmps;
-  });
-}
+    setState(() {
+      environmentsAvailable = tmps;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-
     useEffect(() {
       if (environmentsAvailable.isEmpty) {
         return () {
@@ -56,7 +56,6 @@ getListName(String userId)async{
       };
     }, []);
 
-    
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -142,8 +141,7 @@ getListName(String userId)async{
               },
             ),
           ),
-       
-       Divider(),
+          Divider(),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text("Önerilen ortam"),
@@ -167,14 +165,8 @@ getListName(String userId)async{
               },
             ),
           ),
-       
-       
-       
-       
-       
         ],
       ),
     );
   }
-  
 }
