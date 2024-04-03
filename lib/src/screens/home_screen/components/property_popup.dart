@@ -311,6 +311,7 @@ class _PropertyPopupState extends State<PropertyPopup> {
 
                           //backgroundColor: Colors.amber,
                           shape: RoundedRectangleBorder(
+                            
                             borderRadius: BorderRadius.circular(20.0),
                           ),
                           content: SizedBox(
@@ -351,6 +352,8 @@ class _PropertyPopupState extends State<PropertyPopup> {
                   child: Container(
                       width: 100,
                       height: 100,
+                      padding:const EdgeInsets.only(
+                      left: 12, right: 12, top: 12, bottom: 12),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(color: Colors.grey),
