@@ -72,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 iconTheme: const IconThemeData(color: Colors.black),
                 title: Padding(
                   padding: EdgeInsets.symmetric(
-                    horizontal: getProportionateScreenWidth(4),
+                    horizontal: getProportionateScreenWidth(4),  
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
