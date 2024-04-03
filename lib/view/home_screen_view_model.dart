@@ -83,7 +83,7 @@ class HomeScreenViewModel extends BaseModel {
     notifyListeners();
   }
 
-  void onRefresh(){
+  void onRefresh() {
     notifyListeners();
   }
 }
