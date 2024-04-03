@@ -19,7 +19,7 @@ class _OnboardingViewState extends State<OnboardingView> {
   Widget build(BuildContext context) {
     return Scaffold(
       bottomSheet: Container(
-        color: Colors.blue[300],
+        color: Colors.white38,
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
         child: isLastPage
             ? getStarted()
@@ -29,7 +29,10 @@ class _OnboardingViewState extends State<OnboardingView> {
                   TextButton(
                       onPressed: () => pageController
                           .jumpToPage(controller.items.length - 1),
-                      child: const Text("atla")),
+                      child: const Text(
+                        "atla",
+                        style: TextStyle(color: Colors.blue),
+                      )),
                   SmoothPageIndicator(
                     controller: pageController,
                     count: controller.items.length,
@@ -45,7 +48,10 @@ class _OnboardingViewState extends State<OnboardingView> {
                       onPressed: () => pageController.nextPage(
                           duration: const Duration(milliseconds: 600),
                           curve: Curves.easeIn),
-                      child: const Text("ileri"))
+                      child: const Text(
+                        "ileri",
+                        style: TextStyle(color: Colors.blue),
+                      ))
                 ],
               ),
       ),
@@ -89,15 +95,16 @@ class _OnboardingViewState extends State<OnboardingView> {
         height: 55,
         child: TextButton(
             onPressed: () async {
-              final pres = await SharedPreferences.getInstance();
-              pres.setBool("onboarding", true);
+              final prefs = await SharedPreferences.getInstance();
+              prefs.setBool("onboarding", true);
               print("onb true");
               if (!mounted) return;
 
               //if (!mounted) kontrolü, widget'ın hala kullanıcı arayüzünde olup olmadığını kontrol ederek hataları önler
               //Navigator.pushReplacement(context, MaterialPageRoute(builder: ))
 
-              bool onboarding = pres.getBool("onboarding") ?? true;
+              bool onboarding = prefs.getBool("onboarding") ?? true;
+              print('basla butonu onboarding: ${onboarding}');
               Navigator.push(
                   context,
                   MaterialPageRoute(

@@ -2,14 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart360/helper/helper_function.dart';
 import 'package:smart360/src/models/data_models/propertyModel.dart';
 import 'package:smart360/src/models/data_models/userModel.dart';
 import 'package:smart360/src/screens/home_screen/home_screen.dart';
-import 'package:smart360/view/home_screen_view_model.dart';
 import 'package:smart360/widgets/widgets.dart';
 
 class QuerryClass {
@@ -200,4 +198,66 @@ class QuerryClass {
         .map((tmp) => tmp.child("config").child("title").value.toString())
         .toList();
   }
+
+  ///////////
+  // String fetchSvalue(String userId, String deviceSn, String propertyName) {
+  //   String sValue = "";
+  //   print("-----------------------------------");
+  //   print(userId);
+  //   print(deviceSn);
+  //   print(propertyName);
+  //   print("------------------------------------");
+
+  //   DatabaseReference databaseRefVal = FirebaseDatabase.instance
+  //       .ref()
+  //       .child(userId)
+  //       .child("devices")
+  //       .child(deviceSn)
+  //       .child("components")
+  //       .child(propertyName)
+  //       .child("value");
+
+  //   databaseRefVal.onValue.listen((event) {
+  //     sValue = event.snapshot.value.toString();
+  //   });
+  //   return sValue;
+  // }
+  /////////////////
+  // fetchSvalue(String userId, String deviceSn, String propertyName) {
+  //   DatabaseReference databaseRefVal = FirebaseDatabase.instance
+  //       .ref()
+  //       .child(userId)
+  //       .child("devices")
+  //       //.child(deviceSn)
+  //       .child("components")
+  //       .child(propertyName)
+  //       .child("value");
+
+  //   return databaseRefVal;
+  // }
+
+  // Future<List<String>> fetchDeviceSn(String userId) async {
+  //   List<String> deviceSnList = [];
+
+  //   try {
+  //     // Kullanıcının verilerini al
+  //     DataSnapshot userDataSnapshot = (await FirebaseDatabase.instance
+  //         .ref()
+  //         .child(userId)
+  //         .once()) as DataSnapshot;
+
+  //     // devices düğümünün altındaki tüm çocukları döngü ile tarayın
+  //     Map<dynamic, dynamic> userData =
+  //         userDataSnapshot.value as Map<dynamic, dynamic>;
+  //     Map<dynamic, dynamic> devicesData = userData['devices'];
+  //     devicesData.forEach((key, value) {
+  //       deviceSnList.add(key.toString()); // deviceSn değerini listeye ekleyin
+  //     });
+
+  //     return deviceSnList;
+  //   } catch (e) {
+  //     print('Hata: $e');
+  //     return deviceSnList;
+  //   }
+  // }
 }
