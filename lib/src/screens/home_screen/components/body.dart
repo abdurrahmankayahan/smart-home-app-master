@@ -41,7 +41,9 @@ class Body extends StatelessWidget {
 
             Divider(),
             Container(
-              height: 410,
+              //height: 410,
+              //TODO: ANDORIDDE FLOATBOTTON ekran yüksekliği dışında kalıyordu. çözüm için " height: MediaQuery.of(context).size.height," yapildi
+              height: MediaQuery.of(context).size.height - 1,
               child: FutureBuilder(
                 future: querry.getDeviceCompList(uid, sn),
                 builder: (BuildContext context,
@@ -54,6 +56,7 @@ class Body extends StatelessWidget {
                           padding:
                               EdgeInsets.all(getProportionateScreenHeight(5)),
                           child: DarkContainer(
+                            deviceSn: sn,
                             propertyModel: e,
                             //itsOn: (e.pinVal == "0" ? false : true),
                             onTap: () {
@@ -72,12 +75,10 @@ class Body extends StatelessWidget {
                                 },
                               );
                             },
-                            iconAsset:
-                                'assets/icons/device_icons/thermostat.svg',
 
                             switchButton: () {
                               e.getUpdateFunc();
-                              model.onRefresh();
+                              //model.onRefresh();
                             },
                             isFav: false,
                             switchFav: () {
@@ -93,7 +94,7 @@ class Body extends StatelessWidget {
                       }).toList(),
                     );
                   } else {
-                    return Expanded(
+                    return const Expanded(
                         child: Center(
                             child: CircularProgressIndicator(
                       color: Colors.amber,
@@ -152,7 +153,7 @@ class Body extends StatelessWidget {
         future: db(context),
         builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
+            return const Center(
                 child: Expanded(
                     child: Center(
                         child: CircularProgressIndicator(
@@ -165,7 +166,7 @@ class Body extends StatelessWidget {
           if (snapshot.hasData) {
             return snapshot.data!;
           }
-          return Center(child: Text('No data'));
+          return const Center(child: Text('No data'));
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,

@@ -28,6 +28,7 @@ class WeatherContainer extends StatelessWidget {
 
   Widget _buildWeatherContainer(List<WeatherModel> _weathers) {
     if (_weathers.isEmpty) {
+    //  { // TODO:  kodun düzeltilmesi için burayı sil üst  satırı aç
     return Stack(
       children: [
         Container(

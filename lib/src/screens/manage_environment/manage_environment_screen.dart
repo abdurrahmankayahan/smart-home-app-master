@@ -30,8 +30,8 @@ class _ManageEnvScreenState extends State<ManageEnvScreen> {
 
   gettingUserData() async {
     HelperFunctions hlp = HelperFunctions();
-    hlp.initSP;
-    UserModel user = await hlp.getUserModel() as UserModel;
+    HelperFunctions.initSP;
+    UserModel user = await HelperFunctions.getUserModel() as UserModel;
 
     setState(() {
       username = user.userName!;
