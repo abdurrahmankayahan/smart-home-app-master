@@ -45,17 +45,12 @@ class DarkContainer extends StatefulWidget {
 }
 
 class _DarkContainerState extends State<DarkContainer> {
-  //final PropertyModel propertyModel = PropertyModel();
-  // String sValue = "loading";
   String? email, deviceSn, userId;
   late UserModel user;
-  late StreamSubscription<DatabaseEvent> databaseSubscription;
-  //String widget.propertyModel.getPinVal = "";
 
   @override
   void initState() {
     super.initState();
-    //widget.propertyModel.getPinVal = widget.propertyModel.pinVal!;
     fetchSvalue();
   }
 
@@ -79,7 +74,7 @@ class _DarkContainerState extends State<DarkContainer> {
         .child(widget.propertyModel.propertyName!)
         .child("value");
 
-    databaseSubscription = databaseRefVal.onValue.listen((event) {
+    databaseRefVal.onValue.listen((event) {
       if (mounted) {
         setState(() {
           widget.propertyModel.setPinVal = event.snapshot.value.toString();
@@ -87,12 +82,6 @@ class _DarkContainerState extends State<DarkContainer> {
         });
       }
     });
-  }
-
-  @override
-  void dispose() {
-    databaseSubscription.cancel();
-    super.dispose();
   }
 
   @override
@@ -211,19 +200,9 @@ class _DarkContainerState extends State<DarkContainer> {
                                       widget.propertyModel.getPinVal == "0"
                                           ? "1"
                                           : "0";
-
-                                  // widget.propertyModel.getPinVal;
-
-                                  //      widget.propertyModel.getUpdateFunc();
                                 });
-                                print(
-                                    "mehmeeeeeetttt: ${widget.propertyModel.getPinVal}");
-                                print(
-                                    'mehmeeeeeetttt2: ${widget.propertyModel.getPinVal}');
                                 widget.propertyModel.getUpdateFunc(
                                     val: widget.propertyModel.getPinVal);
-                                // widget.propertyModel.getUpdateFunc();
-                                //widget.switchButton();
                               }),
                               //onTap: widget.propertyModel.getUpdateFunc,
                               // onTap:widget.switchButton,
