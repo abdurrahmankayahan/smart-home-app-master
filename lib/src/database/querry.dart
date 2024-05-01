@@ -169,12 +169,9 @@ class QuerryClass {
     return snapshot;
   }
 
-
-  Future<List<Map<String,String>>>  fetchedComponentsData()async{
-
-///  HATA:   sadece  name  geliyor... 
-   QuerySnapshot querySnapshot =
-
+  Future<List<Map<String, String>>> fetchedComponentsData() async {
+    ///  HATA:   sadece  name  geliyor...
+    QuerySnapshot querySnapshot =
         await FirebaseFirestore.instance.collection('components').get();
     return querySnapshot.docs
         .map((e) => {"id": e.id, "name": e.get("cName").toString()}
