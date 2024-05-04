@@ -59,21 +59,16 @@ class _DarkContainerState extends State<DarkContainer> {
   gettingUserData() async {
     await HelperFunctions.initSP();
     UserModel userData = await HelperFunctions.getUserModel() as UserModel;
-
+ 
     setState(() {
       user = userData;
       userId = user.userId!;
-      fetchSvalue(
-          user.userId!, widget.deviceSn, widget.propertyModel.propertyName!);
+    
     });
+       fetchSvalue( user.userId!, widget.deviceSn, widget.propertyModel.propertyName!);
   }
 
   fetchSvalue(String userId, String deviceSn, String propertyName) {
-    print("-----------------------------------");
-    print(userId);
-    print(deviceSn);
-    print(propertyName);
-    print("------------------------------------");
 
     DatabaseReference databaseRefVal = FirebaseDatabase.instance
         .ref()
@@ -85,10 +80,12 @@ class _DarkContainerState extends State<DarkContainer> {
         .child("value");
 
     databaseRefVal.onValue.listen((event) {
+     
       setState(() {
         widget.propertyModel.setPinVal = event.snapshot.value.toString();
         print(' deger: ${widget.propertyModel.getPinVal}');
       });
+      
     });
   }
 
