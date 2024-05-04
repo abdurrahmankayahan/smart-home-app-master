@@ -14,6 +14,8 @@ void main() {
   testWidgets('My test', (WidgetTester tester) async {
     setupLocator();
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(const MyApp(
+      onboarding: false,
+    ));
   });
 }

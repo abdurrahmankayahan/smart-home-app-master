@@ -30,11 +30,14 @@ class _BodyState extends State<Body> {
   }
 
   getUserinfo() async {
-    hlp.initSP();
-    UserModel tmp = await hlp.getUserModel() as UserModel;
+    await HelperFunctions.initSP();
+    UserModel tmp = await HelperFunctions.getUserModel() as UserModel;
 
     setState(() {
       user = tmp;
+
+      nameController.text = user.getUserName!;
+      emailController.text = user.getUserEmail!;
     });
   }
 
@@ -242,9 +245,9 @@ class _BodyState extends State<Body> {
                 //   userId: user.userId));
 
                 HelperFunctions hlp = HelperFunctions();
-                hlp.initSP();
+                HelperFunctions.initSP();
 
-                hlp.setUserInfo(user);
+                HelperFunctions.setUserInfo(user);
                 // degisiklikler kaydedildikten sonra hesaba yeniden giris yaptirilmali
               }
             },

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart360/config/size_config.dart';
 import 'package:smart360/helper/helper_function.dart';
 import 'package:smart360/provider/base_view.dart';
@@ -26,7 +27,7 @@ class HomeScreen extends StatefulHookWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late String email, username, userId;
+  String? email, username, userId;
 
   @override
   void initState() {
@@ -37,13 +38,15 @@ class _HomeScreenState extends State<HomeScreen> {
   late UserModel user;
   gettingUserData() async {
     HelperFunctions hlp = HelperFunctions();
-    hlp.initSP();
-    UserModel user = await hlp.getUserModel() as UserModel;
+    await HelperFunctions.initSP();
+    UserModel user = await HelperFunctions.getUserModel() as UserModel;
 
     setState(() {
       email = user.userEmail!;
       username = user.userName!;
       userId = user.userId!;
+
+      //userId = user.userId!;
     });
   }
 
@@ -53,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
 //         .get();
 
     //  var s=await fetchData(userId);
-    var s = await querry.fetchData(userId);
+    //var s = await querry.fetchData(userId);
 
     return BaseView<HomeScreenViewModel>(
         onModelReady: (model) => {
@@ -69,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 iconTheme: const IconThemeData(color: Colors.black),
                 title: Padding(
                   padding: EdgeInsets.symmetric(
-                    horizontal: getProportionateScreenWidth(4),
+                    horizontal: getProportionateScreenWidth(4),  
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -79,6 +82,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Text(
                           "${username}",
                           style: Theme.of(context).textTheme.displayLarge,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
                         ),
                       ),
                       Container(
@@ -96,7 +101,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: Colors.black,
                           ),
                           onPressed: () {
-                            // Navigator.of(context).pushNamed(EditProfile.routeName);
+                            Navigator.of(context)
+                                .pushNamed(EditProfile.routeName);
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -116,44 +122,58 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   child: Row(
                     children: [
-                      Expanded(
-                        child: TabBar(
-                          dividerColor: Colors.amber,
-                          //dividerHeight: 3,
-                          isScrollable: true,
-                          unselectedLabelColor: Colors.white.withOpacity(0.3),
-                          indicatorColor: const Color(0xFF464646),
-                          tabs: s.child("devices").children.map(
-                            (child) {
-                              return (Tab(
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      child
-                                          .child("config")
-                                          .child("title")
-                                          .value
-                                          .toString(),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .displaySmall,
-                                    ),
-                                  ],
-                                ),
-                              ));
-                            },
-                          ).toList(),
-                        ),
+                      FutureBuilder(
+                        future: querry.getTabsName(userId!),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<List<String>> snapshot) {
+                          if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                            return Expanded(
+                              child: TabBar(
+                                dividerColor: Colors.amber,
+                                //dividerHeight: 3,
+                                isScrollable: true,
+                                unselectedLabelColor:
+                                    Colors.white.withOpacity(0.3),
+                                indicatorColor: const Color(0xFF464646),
+                                tabs: snapshot.data!.map(
+                                  (tmp) {
+                                    return (Tab(
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            tmp,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .displaySmall,
+                                          ),
+                                        ],
+                                      ),
+                                    ));
+                                  },
+                                ).toList(),
+                              ),
+                            );
+                          } else {
+                            return Container();
+                            // return Expanded(
+                            //     child: Center(
+                            //         child: LinearProgressIndicator(
+                            //             color: Colors.amber)));
+                          }
+                        },
                       ),
                       IconButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      //addEnvironmentScreen(userId:userId),
-                                      ManageEnvScreen(),
-                                ));
+                          onPressed: () async {
+                            // Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //       builder: (context) =>
+                            //           //addEnvironmentScreen(userId:userId),
+                            //           ManageEnvScreen(),
+                            //     ));
+                            final prefs = await SharedPreferences.getInstance();
+                            prefs.setBool("onboarding", false);
+                            print("onb flse");
                           },
                           icon: Icon(Icons.add_home_work_rounded))
                     ],
@@ -162,17 +182,40 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               drawer: SizedBox(
                   width: getProportionateScreenWidth(270), child: const Menu()),
-              body: TabBarView(
-                children: s.child("devices").children.map(
-                  (child) {
-                    return (Body(
-                      model: model,
-                      uid: userId,
-                      sn: child.key.toString(),
+              body: FutureBuilder(
+                future: querry.getTabsBody(userId!),
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<String>> snapshot) {
+                  if (snapshot.hasData) {
+                    return TabBarView(
+                        children: snapshot.data!.map(
+                      (e) {
+                        return (Body(
+                          model: model,
+                          uid: userId!,
+                          sn: e,
+                        ));
+                      },
+                    ).toList());
+                  } else {
+                    return Center(
+                        child: CircularProgressIndicator(
+                      color: Colors.amber,
                     ));
-                  },
-                ).toList(),
+                  }
+                },
               ),
+
+              // s.child("devices").children.map(
+              //   (child) {
+              //     return (Body(
+              //       model: model,
+              //       uid: userId,
+              //       sn: child.key.toString(),
+              //     ));
+              //   },
+              // ).toList(),
+
               //bottomNavigationBar: CustomBottomNavBar(model: model),
             ),
           );
@@ -184,7 +227,7 @@ class _HomeScreenState extends State<HomeScreen> {
     SizeConfig().init(context);
 
     useEffect(() {
-      if (userId.isEmpty) {
+      if (userId!.isEmpty) {
         return () {
           Center(child: CircularProgressIndicator());
         };
