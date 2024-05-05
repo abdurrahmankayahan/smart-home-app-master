@@ -1,27 +1,27 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:async';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
 import 'package:smart360/config/size_config.dart';
 import 'package:smart360/helper/helper_function.dart';
 import 'package:smart360/src/models/data_models/propertyModel.dart';
 import 'package:smart360/src/models/data_models/userModel.dart';
+import 'package:flutter/widgets.dart';
 import 'package:smart360/src/screens/add_environment/add_environment.dart';
 
 class DarkContainer extends StatefulWidget {
   ///TODO: Dark Container yerine  bir  container uygulaması yaz  parametresi  propertyModel olsun.
-  ///
   ///Pin bilgisine göre  sadece veri okur  (sensör) veya  1-0  çıktı verir. (role)
   ///(Pin bilgisine göre  containerda button   veya sadece text alanı tutulmalı)
   ///özellik ismi olmalı
   ///özelliği ifade eden resim için resim url bilgisi tutmalı
-  /// value  bilgisi için  verileri almalı
-  /// button olan container için on click fonk.  olmalı
-  ///  uzerine tıklandığında  özellikleri ayarlamak değişiklik yapmak için  sayfaları  açan fonk. olmalı (void callback  & Function)
-  /// bu bilgileri içeren properyModel  yazılmalı
-  ///
-  /// !! Veritabanı bu bilgilere göre tekrar oluşturulmalıdır.
+  ///value  bilgisi için  verileri almalı
+  ///button olan container için on click fonk.  olmalı
+  ///uzerine tıklandığında  özellikleri ayarlamak değişiklik yapmak için  sayfaları  açan fonk. olmalı (void callback  & Function)
+  ///bu bilgileri içeren properyModel  yazılmalı
+  ///!!Veritabanı bu bilgilere göre tekrar oluşturulmalıdır.
 
   final PropertyModel propertyModel;
   final String deviceSn;
@@ -45,20 +45,27 @@ class DarkContainer extends StatefulWidget {
 }
 
 class _DarkContainerState extends State<DarkContainer> {
-  //final PropertyModel propertyModel = PropertyModel();
-  // String sValue = "loading";
   String? email, deviceSn, userId;
   late UserModel user;
 
   @override
   void initState() {
     super.initState();
-    gettingUserData();
+    fetchSvalue();
   }
 
-  gettingUserData() async {
+  fetchSvalue() async {
     await HelperFunctions.initSP();
     UserModel userData = await HelperFunctions.getUserModel() as UserModel;
+
+
+    print("-----------------------------------");
+    print(userData.userId!);
+    print(widget.deviceSn);
+    print(widget.propertyModel.propertyName);
+    print(widget.propertyModel.getPinVal);
+    print("------------------------------------");
+
  
     setState(() {
       user = userData;
@@ -70,22 +77,32 @@ class _DarkContainerState extends State<DarkContainer> {
 
   fetchSvalue(String userId, String deviceSn, String propertyName) {
 
+
     DatabaseReference databaseRefVal = FirebaseDatabase.instance
         .ref()
-        .child(userId)
+        .child(userData.userId!)
         .child("devices")
-        .child(deviceSn)
+        .child(widget.deviceSn)
         .child("components")
-        .child(propertyName)
+        .child(widget.propertyModel.propertyName!)
         .child("value");
 
     databaseRefVal.onValue.listen((event) {
+
+      if (mounted) {
+        setState(() {
+          widget.propertyModel.setPinVal = event.snapshot.value.toString();
+          print(' deger: ${widget.propertyModel.getPinVal}');
+        });
+      }
+
      
       setState(() {
         widget.propertyModel.setPinVal = event.snapshot.value.toString();
         print(' deger: ${widget.propertyModel.getPinVal}');
       });
       
+
     });
   }
 
@@ -199,7 +216,17 @@ class _DarkContainerState extends State<DarkContainer> {
                                   ),
                             ),
                             InkWell(
-                              onTap: widget.propertyModel.getUpdateFunc,
+                              onTap: (() {
+                                setState(() {
+                                  widget.propertyModel.setPinVal =
+                                      widget.propertyModel.getPinVal == "0"
+                                          ? "1"
+                                          : "0";
+                                });
+                                widget.propertyModel.getUpdateFunc(
+                                    val: widget.propertyModel.getPinVal);
+                              }),
+                              //onTap: widget.propertyModel.getUpdateFunc,
                               // onTap:widget.switchButton,
                               child: Container(
                                 width: 48,
