@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 import 'package:smart360/config/size_config.dart';
 import 'package:smart360/src/database/querry.dart';
 import 'package:smart360/src/models/data_models/propertyModel.dart';
@@ -40,10 +42,14 @@ class Body extends StatelessWidget {
             ),
 
             Divider(),
+       
+            
+            
             Container(
-              //height: 410,
+              
+              //height: 500,
               //TODO: ANDORIDDE FLOATBOTTON ekran yüksekliği dışında kalıyordu. çözüm için " height: MediaQuery.of(context).size.height," yapildi
-              height: MediaQuery.of(context).size.height - 1,
+              height: MediaQuery.of(context).size.height*0.6, //MediaQuery.of(context).size.height - 1,
               child: FutureBuilder(
                 future: querry.getDeviceCompList(uid, sn),
                 builder: (BuildContext context,
@@ -91,7 +97,9 @@ class Body extends StatelessWidget {
                             //sensorValue: "dennnnn",
                           ),
                         );
-                      }).toList(),
+                      },).toList(),
+                      
+                      
                     );
                   } else {
                     return const Expanded(
@@ -102,7 +110,10 @@ class Body extends StatelessWidget {
                   }
                 },
               ),
+
             ),
+          
+           
             // Row(children: [
             //   Expanded(
             //     child: Pdding(

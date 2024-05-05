@@ -107,7 +107,7 @@ class QuerryClass {
               updateFunc: (({val}) => {
                     tmp.ref.update({
                       'value': val ??
-                          (tmp.child("value").value.toString() == "0" ? 1 : 0)
+                          (tmp.child("value").value.toString() == "0" ? "1" : "0")
                     })
                   }),
             ))
