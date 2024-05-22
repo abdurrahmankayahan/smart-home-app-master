@@ -122,10 +122,10 @@ class _MyAppState extends State<MyApp> {
       routes: routes,
       //home: isLogged == true ? HomeScreen() : SplashScreen(),
       //home: onboarding ? HomeScreen() : OnboardingView(),
-      // home: isLogged
-      //     ? (onboarding ? HomeScreen() : OnboardingView())
-      //     : SplashScreen(),
-      home: OnboardingView(),
+      home: isLogged
+          ? (onboarding ? HomeScreen() : OnboardingView())
+          : SplashScreen(),
+      //home: OnboardingView(),
     );
   }
 }

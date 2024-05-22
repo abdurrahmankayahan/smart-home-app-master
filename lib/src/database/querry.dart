@@ -199,6 +199,26 @@ class QuerryClass {
         .toList();
   }
 
+///////////////////////////////////////
+
+  // Belirtilen kullanıcı, cihaz ve özellik adını kullanarak özelliği kaldırma fonksiyonu
+  Future<void> removeProperty(
+      String userId, String deviceSn, String propertyName) async {
+    DatabaseReference propertyRef = databaseReference
+        .child(userId)
+        .child('devices')
+        .child(deviceSn)
+        .child('components')
+        .child(propertyName);
+
+    try {
+      await propertyRef.remove();
+      print('Property $propertyName removed successfully.');
+    } catch (error) {
+      print('Error removing property $propertyName: $error');
+    }
+  }
+
   ///////////
   // String fetchSvalue(String userId, String deviceSn, String propertyName) {
   //   String sValue = "";
