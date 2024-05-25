@@ -77,6 +77,11 @@ class _PropertyPopupState extends State<PropertyPopup> {
 
     setState(() {
       components = tmp;
+      if (!components
+          .any((component) => component['id'] == selectedComponentId)) {
+        selectedComponentId = null;
+        dropText = "Components Seçiniz";
+      }
     });
   }
 
@@ -115,20 +120,17 @@ class _PropertyPopupState extends State<PropertyPopup> {
                       return null;
                     },
                     onSaved: (value) {
-                      if (value! == widget.propertyModel.getPropertyName) {
-                        print("ayni");
-                        print(propertyModel.getPropertyName);
-                        //propertyModel.propertyName = value!;
+                      if (value! == widget.propertyModel.propertyName) {
                       } else {
-                        print("aynidegil");
                         print(
-                            ' propName: ${widget.propertyModel.getPropertyName}');
-
-                        print(
-                            'uid: ${widget.userId} ozellikno: ${widget.deviceSn} propname: ${widget.propertyModel.getPropertyName!}');
-                        querry.removeProperty(widget.userId, widget.deviceSn,
-                            widget.propertyModel.getPropertyName!);
-                        propertyModel.propertyName = value!;
+                            'uid: ${widget.userId} ozellikno: ${widget.deviceSn} propname: ${widget.propertyModel.propertyName!}');
+                        // removeProperty çağrısı yapmadan önce propertyName'in boş olmadığını kontrol et
+                        if (widget.propertyModel.propertyName != null &&
+                            widget.propertyModel.propertyName!.isNotEmpty) {
+                          querry.removeProperty(widget.userId, widget.deviceSn,
+                              widget.propertyModel.propertyName!);
+                        }
+                        propertyModel.propertyName = value;
                       }
                     },
                     decoration: tema.inputDec("Özellik adı ", Icons.abc),
@@ -185,7 +187,7 @@ class _PropertyPopupState extends State<PropertyPopup> {
                           ),
                         ),
                       ]),
-                      value: selectedComponentId!,
+                      value: selectedComponentId,
                       onChanged: (String? newValue) {
                         setState(() {
                           selectedComponentId = newValue;

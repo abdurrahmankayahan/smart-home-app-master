@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart360/config/size_config.dart';
 import 'package:smart360/helper/helper_function.dart';
 import 'package:smart360/provider/base_view.dart';
+import 'package:smart360/service/notification_service.dart';
 import 'package:smart360/src/database/querry.dart';
 import 'package:smart360/src/models/data_models/userModel.dart';
 import 'package:smart360/src/screens/edit_profile/edit_profile.dart';

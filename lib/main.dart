@@ -1,8 +1,11 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:grock/grock.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart360/firebase_options.dart';
 import 'package:smart360/helper/helper_function.dart';
 import 'package:smart360/provider/getit.dart';
 import 'package:smart360/routes/routes.dart';
+import 'package:smart360/service/notification_service.dart';
 import 'package:smart360/src/models/data_models/userModel.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +21,12 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   setupLocator();
+
+  final notificationService = FirebaseNotificationService(); // Yeni eklenen
+  notificationService.connectNotification(); // Yeni eklenen
+  FirebaseMessaging.onBackgroundMessage(
+      FirebaseNotificationService.backgroundMessage);
+
   runApp(MyApp(onboarding: onboarding));
 }
 
@@ -59,6 +68,8 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'smart360',
       debugShowCheckedModeBanner: false,
+      navigatorKey: Grock.navigationKey,
+      scaffoldMessengerKey: Grock.scaffoldMessengerKey,
       themeMode: themeMode,
       theme: ThemeData(
         fontFamily: 'Nato Sans',
